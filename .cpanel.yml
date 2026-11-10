@@ -2,7 +2,7 @@
 deployment:
   tasks:
     - export REPO_ROOT="/home/mamikhev/repositories/mamikhevan"
-    - export APP_ROOT="/home/mamikhev/public_html/mamikhevan_shop"
+    - export APP_ROOT="/home/mamikhev/public_html/mamikhevan"
     - export PUBLIC_ROOT="/home/mamikhev/public_html"
     - /bin/mkdir -p "$APP_ROOT" "$PUBLIC_ROOT"
     - /bin/cp "$REPO_ROOT/cpanel-main-domain/mamikhevan_shop/.htaccess" "$APP_ROOT/.htaccess"
@@ -23,5 +23,5 @@ deployment:
     - cd "$APP_ROOT" && php artisan config:cache && php artisan view:cache
     - if [ -e "$APP_ROOT/public/storage" ] && [ ! -L "$APP_ROOT/public/storage" ]; then echo "Move the existing application public/storage directory before deployment" >&2; exit 1; fi
     - /bin/ln -sfn "$APP_ROOT/storage/app/public" "$APP_ROOT/public/storage"
-    - /bin/cp "$REPO_ROOT/cpanel-main-domain/public_html/index.php" "$PUBLIC_ROOT/index.php"
-    - /bin/cp "$REPO_ROOT/cpanel-main-domain/public_html/.htaccess" "$PUBLIC_ROOT/.htaccess"
+    - /bin/sed 's/mamikhevan_shop/mamikhevan/g' "$REPO_ROOT/cpanel-main-domain/public_html/index.php" > "$PUBLIC_ROOT/index.php"
+    - /bin/sed 's/mamikhevan_shop/mamikhevan/g' "$REPO_ROOT/cpanel-main-domain/public_html/.htaccess" > "$PUBLIC_ROOT/.htaccess"
