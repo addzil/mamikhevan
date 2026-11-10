@@ -5,8 +5,8 @@ DirectoryIndex index.php
     RewriteEngine On
 
     # Do not expose the Laravel project directory through a browser.
-    RewriteCond %{THE_REQUEST} \s/+mamikhevan_shop(?:[/?\s]|$) [NC]
-    RewriteRule ^mamikhevan_shop(?:/|$) - [F,L,NC]
+    RewriteCond %{THE_REQUEST} \s/+mamikhevan(?:[/?\s]|$) [NC]
+    RewriteRule ^mamikhevan(?:/|$) - [F,L,NC]
 
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
@@ -15,8 +15,8 @@ DirectoryIndex index.php
     RewriteRule .* - [E=HTTP_X_XSRF_TOKEN:%{HTTP:X-XSRF-Token}]
 
     # Serve Vite assets, product images, uploads and public metadata.
-    RewriteCond %{DOCUMENT_ROOT}/mamikhevan_shop/public/$1 -f
-    RewriteRule ^((?:build|images|storage)/.+|favicon\.ico|robots\.txt)$ mamikhevan_shop/public/$1 [L]
+    RewriteCond %{DOCUMENT_ROOT}/mamikhevan/public/$1 -f
+    RewriteRule ^((?:build|images|storage)/.+|favicon\.ico|robots\.txt)$ mamikhevan/public/$1 [L]
 
     RewriteRule ^(?:build|images|storage)/ - [R=404,L]
 

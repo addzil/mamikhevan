@@ -1,18 +1,15 @@
-# Main domain cPanel
+# File untuk domain utama cPanel
 
-Susunan file di server:
+Aplikasi Laravel berada di `/home/mamikhev/public_html/mamikhevan` dan document root domain utama berada di `/home/mamikhev/public_html`.
 
-```text
-/home/mamikhev/public_html/
-  .htaccess                         <- dari public_html/.htaccess
-  index.php                         <- dari public_html/index.php
-  mamikhevan_shop/
-    .htaccess                       <- dari mamikhevan_shop/.htaccess
-    app/ bootstrap/ public/ vendor/ ...
-```
+Untuk pemasangan manual, salin file berikut dengan nama yang sama. Tampilkan file tersembunyi di File Manager cPanel agar `.htaccess` terlihat.
 
-Saat **Deploy HEAD Commit**, `.cpanel.yml` menyalin dua file dari folder `public_html/` ke `/home/mamikhev/public_html/`, dan file dari folder `mamikhevan_shop/` ke `/home/mamikhev/public_html/mamikhevan_shop/`. Untuk pemasangan manual, salin file ke lokasi yang sama. Jangan menimpa `mamikhevan_shop/public/index.php` atau `mamikhevan_shop/public/.htaccess`.
+| File di repositori | Lokasi di server |
+| --- | --- |
+| `public_html/index.php` | `/home/mamikhev/public_html/index.php` |
+| `public_html/.htaccess` | `/home/mamikhev/public_html/.htaccess` |
+| `mamikhevan/.htaccess` | `/home/mamikhev/public_html/mamikhevan/.htaccess` |
 
-Pastikan `vendor/autoload.php` dan `public/build/manifest.json` ada di folder proyek. Deployment membuat symlink `public/storage` ke `storage/app/public` untuk gambar hasil unggahan. Atur `APP_URL` pada `.env` ke URL main domain tanpa `/mamikhevan_shop`.
+Jangan menimpa `mamikhevan/public/index.php` atau `mamikhevan/public/.htaccess`. File tersebut adalah bagian dari Laravel. Pastikan `mamikhevan/vendor/autoload.php` dan `mamikhevan/public/build/manifest.json` sudah ada. Untuk gambar hasil unggahan, `mamikhevan/public/storage` harus berupa symlink ke `mamikhevan/storage/app/public`.
 
-Source Git tetap berada di `/home/mamikhev/repositories/mamikhevan`; folder aplikasi di `public_html/mamikhevan_shop` menerima salinan kode dari source saat deployment.
+Atur `APP_URL` di `mamikhevan/.env` ke URL domain utama tanpa `/mamikhevan`. Saat deployment otomatis, `.cpanel.yml` menyalin tiga file di atas ke lokasi yang sama.

@@ -5,7 +5,7 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-$laravelPath = __DIR__.'/mamikhevan_shop';
+$laravelPath = __DIR__.'/mamikhevan';
 
 if (file_exists($maintenance = $laravelPath.'/storage/framework/maintenance.php')) {
     require $maintenance;
