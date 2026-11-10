@@ -8,8 +8,10 @@ deployment:
     - if [ "$REPO_ROOT" != "$APP_ROOT" ]; then /bin/cp "$REPO_ROOT/.htaccess" "$APP_ROOT/.htaccess"; fi
     - if [ ! -f "$APP_ROOT/.env" ] && [ -f "$REPO_ROOT/.env" ]; then /bin/cp "$REPO_ROOT/.env" "$APP_ROOT/.env"; fi
     - cd "$APP_ROOT" && test -f .env || { echo "Missing production .env in $APP_ROOT" >&2; exit 1; }
-    - cd "$APP_ROOT" && grep -Eq '^APP_ENV=production$' .env && grep -Eq '^APP_DEBUG=false$' .env && grep -Eq '^APP_KEY=.+$' .env || { echo "Invalid production .env in $APP_ROOT" >&2; exit 1; }
-    - cd "$APP_ROOT" && grep -Eq '^DB_CONNECTION=mysql$' .env || { echo "Set DB_CONNECTION=mysql in $APP_ROOT/.env" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^APP_ENV=production[[:space:]]*$' .env || { echo "Set APP_ENV=production in $APP_ROOT/.env" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^APP_DEBUG=false[[:space:]]*$' .env || { echo "Set APP_DEBUG=false in $APP_ROOT/.env" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^APP_KEY=[^[:space:]]+[[:space:]]*$' .env || { echo "Set a nonempty APP_KEY in $APP_ROOT/.env" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^DB_CONNECTION=mysql[[:space:]]*$' .env || { echo "Set DB_CONNECTION=mysql in $APP_ROOT/.env" >&2; exit 1; }
     - if [ "$REPO_ROOT" != "$APP_ROOT" ]; then for d in app config resources routes; do /bin/mkdir -p "$APP_ROOT/$d"; /bin/cp -R "$REPO_ROOT/$d/." "$APP_ROOT/$d/"; done; fi
     - /bin/mkdir -p "$APP_ROOT/bootstrap/cache" "$APP_ROOT/database" "$APP_ROOT/public" "$APP_ROOT/storage/app/public" "$APP_ROOT/storage/framework/cache" "$APP_ROOT/storage/framework/sessions" "$APP_ROOT/storage/framework/views" "$APP_ROOT/storage/logs"
     - if [ "$REPO_ROOT" != "$APP_ROOT" ]; then /bin/cp "$REPO_ROOT/bootstrap/app.php" "$REPO_ROOT/bootstrap/providers.php" "$APP_ROOT/bootstrap/"; fi
