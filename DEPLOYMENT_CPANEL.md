@@ -4,7 +4,7 @@ Repositori Git dapat berada di lokasi mana pun yang dikonfigurasi pada Git Versi
 
 ## Persiapan server
 
-1. Pastikan PHP, Composer, dan Node.js/npm tersedia untuk akun cPanel.
+1. Pastikan PHP, Composer, dan Node.js/npm tersedia untuk akun cPanel. Skrip deploy mencari Composer pada PATH, termasuk `~/.local/bin`, `~/bin`, `/usr/local/bin`, dan `/opt/cpanel/composer/bin`, atau memakai `~/composer.phar`. Jika Composer belum terpasang, [pasang Composer untuk akun ini](https://getcomposer.org/doc/00-intro.md) atau minta bantuan penyedia hosting.
 2. Siapkan `.env` produksi di `/home/mamikhev/public_html/mamikhevan/.env`. Jika repositori Git berada di folder lain, skrip dapat menyalin `.env` dari direktori checkout pada deployment pertama. `.env` tidak masuk Git.
 3. Isi `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://domain-anda` tanpa `/mamikhevan`, dan `APP_KEY`. Konfigurasi MySQL di `.env` harus memuat `DB_CONNECTION=mysql`, `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD` sesuai database serta pengguna database yang dibuat di cPanel. Pastikan pengguna database memiliki akses ke database tersebut. Jangan masukkan kredensial ini ke Git.
 4. Pada instalasi baru yang belum memiliki `APP_KEY`, jalankan `composer install --no-dev --optimize-autoloader --no-interaction` dan `php artisan key:generate` sekali di folder aplikasi. Jangan mengganti kunci pada deployment berikutnya.
