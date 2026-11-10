@@ -2,7 +2,7 @@
 deployment:
   tasks:
     - export REPO_ROOT="/home/mamikhev/repositories/mamikhevan"
-    - export APP_ROOT="/home/mamikhev/kids-closet"
+    - export APP_ROOT="/home/mamikhev/repositories/mamikhevan"
     - export PUBLIC_ROOT="/home/mamikhev/public_html"
     - /bin/mkdir -p "$APP_ROOT" "$APP_ROOT/public" "$PUBLIC_ROOT"
     - for d in app bootstrap config database resources routes storage; do /bin/mkdir -p "$APP_ROOT/$d"; /bin/cp -R "$REPO_ROOT/$d/." "$APP_ROOT/$d/"; done
