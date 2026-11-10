@@ -1,6 +1,6 @@
 # Deployment cPanel
 
-Repositori Git dapat berada di lokasi mana pun yang dikonfigurasi pada Git Version Control cPanel. Aplikasi Laravel berada di `/home/mamikhev/public_html/mamikhevan`, sedangkan document root domain utama adalah `/home/mamikhev/public_html`. `.cpanel.yml` memakai direktori checkout Git saat deployment, membangun aset, menjalankan migrasi, lalu menyalin front controller dan `.htaccess` dari `cpanel-main-domain/`.
+Repositori Git dapat berada di lokasi mana pun yang dikonfigurasi pada Git Version Control cPanel. Aplikasi Laravel berada di `/home/mamikhev/public_html/mamikhevan`, sedangkan document root domain utama adalah `/home/mamikhev/public_html`. `.cpanel.yml` memakai direktori checkout Git saat deployment, membangun aset, menjalankan migrasi, lalu menyalin front controller dan `.htaccess` domain utama dari `cpanel-main-domain/`. `.htaccess` aplikasi berada di akar repositori.
 
 ## Persiapan server
 
@@ -12,4 +12,4 @@ Repositori Git dapat berada di lokasi mana pun yang dikonfigurasi pada Git Versi
 
 Untuk pemasangan manual `index.php` dan `.htaccess`, ikuti [petunjuk penyalinan](cpanel-main-domain/README.md). Jalankan **Update from Remote**, lalu **Deploy HEAD Commit** melalui Git Version Control cPanel untuk deployment otomatis. Deployment mempertahankan `.env` dan isi `storage/` pada folder aplikasi; migrasi berjalan menggunakan koneksi MySQL di `.env`. Setelah selesai, periksa domain utama dan log Laravel di `mamikhevan/storage/logs/` jika ada masalah.
 
-Jika tombol **Deploy HEAD Commit** nonaktif, periksa direktori repo yang ditampilkan di Git Version Control cPanel dengan `git status --short`, `git branch --show-current`, dan `git ls-files .cpanel.yml`. cPanel memerlukan working tree bersih, branch, dan `.cpanel.yml` yang sudah masuk commit. Jika repo Git berada langsung di `public_html/mamikhevan`, `.htaccess` aplikasi yang disalin secara manual di akar repo akan muncul sebagai file untracked. File lain yang disalin atau dibuat manual di akar repo tetap perlu diperiksa satu per satu; jangan menghapusnya secara massal.
+Jika tombol **Deploy HEAD Commit** nonaktif, periksa direktori repo yang ditampilkan di Git Version Control cPanel dengan `git status --short`, `git branch --show-current`, dan `git ls-files .cpanel.yml`. cPanel memerlukan working tree bersih, branch, dan `.cpanel.yml` yang sudah masuk commit. Jika repo Git berada langsung di `public_html/mamikhevan` dan `.htaccess` aplikasi sudah disalin manual sebelum file ini masuk Git, pindahkan atau cadangkan file tersebut di luar direktori repo sebelum **Update from Remote** agar Git dapat mengambil versi yang dilacak. Periksa file lain yang dibuat manual satu per satu; jangan menghapusnya secara massal.

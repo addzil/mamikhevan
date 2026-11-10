@@ -5,7 +5,7 @@ deployment:
     - export APP_ROOT="/home/mamikhev/public_html/mamikhevan"
     - export PUBLIC_ROOT="/home/mamikhev/public_html"
     - /bin/mkdir -p "$APP_ROOT" "$PUBLIC_ROOT"
-    - /bin/cp "$REPO_ROOT/cpanel-main-domain/mamikhevan/.htaccess" "$APP_ROOT/.htaccess"
+    - if [ "$REPO_ROOT" != "$APP_ROOT" ]; then /bin/cp "$REPO_ROOT/.htaccess" "$APP_ROOT/.htaccess"; fi
     - if [ ! -f "$APP_ROOT/.env" ] && [ -f "$REPO_ROOT/.env" ]; then /bin/cp "$REPO_ROOT/.env" "$APP_ROOT/.env"; fi
     - cd "$APP_ROOT" && test -f .env || { echo "Missing production .env in $APP_ROOT" >&2; exit 1; }
     - cd "$APP_ROOT" && grep -Eq '^APP_ENV=production$' .env && grep -Eq '^APP_DEBUG=false$' .env && grep -Eq '^APP_KEY=.+$' .env || { echo "Invalid production .env in $APP_ROOT" >&2; exit 1; }
