@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Ilustrasi sepatu anak">
+  <defs>
+    <linearGradient id="sh-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#F3EEFF"/>
+      <stop offset="1" stop-color="#E3D8FF"/>
+    </linearGradient>
+    <linearGradient id="sh-shoe" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#A98BF2"/>
+      <stop offset="1" stop-color="#7B5AD8"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#sh-bg)"/>
+  <circle cx="102" cy="110" r="30" fill="#FFFFFF" opacity=".55"/>
+  <circle cx="500" cy="108" r="18" fill="#FFFFFF" opacity=".45"/>
+  <circle cx="500" cy="492" r="40" fill="#FFFFFF" opacity=".3"/>
+  <circle cx="88" cy="470" r="16" fill="#FFFFFF" opacity=".5"/>
+  <g transform="translate(0 18)">
+    <path d="M150 352 Q148 306 182 288 L242 260 Q268 250 286 270 L330 318 Q344 332 372 340 L430 358 Q458 368 460 396 Q460 420 430 422 L188 422 Q150 420 150 384 Z" fill="url(#sh-shoe)"/>
+    <path d="M150 386 Q300 412 460 386 L460 404 Q460 424 430 426 L188 426 Q154 424 152 398 Z" fill="#FFF7EE"/>
+    <path d="M262 282 Q300 300 330 336" fill="none" stroke="#FFF7EE" stroke-width="12" stroke-linecap="round" opacity=".9"/>
+    <g stroke="#FFF7EE" stroke-width="9" stroke-linecap="round" opacity=".9">
+      <path d="M300 300 L330 292"/>
+      <path d="M316 320 L346 312"/>
+      <path d="M332 340 L362 332"/>
+    </g>
+    <path d="M352 338 Q368 322 388 330 Q376 348 352 350 Z" fill="#FFF7EE" opacity=".9"/>
+  </g>
+  <g transform="translate(58 92) scale(.82)" opacity=".95">
+    <path d="M150 352 Q148 306 182 288 L242 260 Q268 250 286 270 L330 318 Q344 332 372 340 L430 358 Q458 368 460 396 Q460 420 430 422 L188 422 Q150 420 150 384 Z" fill="#CBB8FA"/>
+    <path d="M150 386 Q300 412 460 386 L460 404 Q460 424 430 426 L188 426 Q154 424 152 398 Z" fill="#FFF7EE"/>
+    <path d="M262 282 Q300 300 330 336" fill="none" stroke="#FFF7EE" stroke-width="12" stroke-linecap="round" opacity=".9"/>
+  </g>
+</svg>

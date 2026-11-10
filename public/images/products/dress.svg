@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Ilustrasi dress anak">
+  <defs>
+    <linearGradient id="dr-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFEFF5"/>
+      <stop offset="1" stop-color="#FFD9E8"/>
+    </linearGradient>
+    <linearGradient id="dr-dress" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#FF9EC0"/>
+      <stop offset="1" stop-color="#EE6E9B"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#dr-bg)"/>
+  <circle cx="108" cy="120" r="30" fill="#FFFFFF" opacity=".5"/>
+  <circle cx="492" cy="92" r="18" fill="#FFFFFF" opacity=".45"/>
+  <circle cx="500" cy="500" r="38" fill="#FFFFFF" opacity=".3"/>
+  <circle cx="92" cy="460" r="14" fill="#FFFFFF" opacity=".5"/>
+  <path d="M252 144 L348 144 L358 232 L242 232 Z" fill="#FFB7CF"/>
+  <path d="M242 232 Q300 264 358 232 L420 476 Q300 522 180 476 Z" fill="url(#dr-dress)"/>
+  <path d="M300 240 L300 500" stroke="#FFD9E8" stroke-width="4" opacity=".45"/>
+  <path d="M180 476 Q300 522 420 476 Q300 506 180 476 Z" fill="#D85B87" opacity=".4"/>
+  <path d="M252 144 Q300 176 348 144" fill="none" stroke="#FFF0F6" stroke-width="12" stroke-linecap="round"/>
+  <g fill="#FFF4F8" opacity=".85">
+    <circle cx="262" cy="300" r="7"/>
+    <circle cx="322" cy="322" r="7"/>
+    <circle cx="282" cy="356" r="7"/>
+    <circle cx="336" cy="386" r="7"/>
+    <circle cx="252" cy="404" r="7"/>
+    <circle cx="302" cy="430" r="7"/>
+  </g>
+  <path d="M300 232 q-26 22 -46 6 q16 -22 46 -6 q30 -16 46 6 q-20 16 -46 -6 z" fill="#FFF0F6" opacity=".9"/>
+</svg>

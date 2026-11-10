@@ -1,0 +1,55 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+    [x-cloak] {
+        display: none !important;
+    }
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+    body {
+        @apply bg-[#FFFDF4] text-stone-800;
+    }
+
+    ::selection {
+        @apply bg-amber-200 text-amber-900;
+    }
+}
+
+@layer utilities {
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .text-balance {
+        text-wrap: balance;
+    }
+
+    .animate-float {
+        animation: mamikhevan-float 6s ease-in-out infinite;
+    }
+
+    .animate-float-slow {
+        animation: mamikhevan-float 9s ease-in-out infinite;
+    }
+}
+
+@keyframes mamikhevan-float {
+    0%,
+    100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-14px);
+    }
+}

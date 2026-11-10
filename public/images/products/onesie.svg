@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Ilustrasi onesie bayi">
+  <defs>
+    <linearGradient id="on-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#EAF8F4"/>
+      <stop offset="1" stop-color="#CFF0E8"/>
+    </linearGradient>
+    <linearGradient id="on-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#8FE3D3"/>
+      <stop offset="1" stop-color="#5CC9B8"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#on-bg)"/>
+  <circle cx="98" cy="104" r="30" fill="#FFFFFF" opacity=".5"/>
+  <circle cx="506" cy="130" r="18" fill="#FFFFFF" opacity=".45"/>
+  <circle cx="502" cy="492" r="42" fill="#FFFFFF" opacity=".3"/>
+  <circle cx="92" cy="472" r="16" fill="#FFFFFF" opacity=".5"/>
+  <path d="M244 160 Q300 196 356 160 L412 210 L376 280 L354 266 L362 440 Q300 470 238 440 L246 266 L224 280 L188 210 Z" fill="url(#on-body)"/>
+  <path d="M250 164 Q300 202 350 164" fill="none" stroke="#E8FBF6" stroke-width="12" stroke-linecap="round" opacity=".9"/>
+  <path d="M258 424 Q282 398 300 424 Q318 398 342 424 Q330 456 300 456 Q270 456 258 424 Z" fill="#4FB9A9" opacity=".55"/>
+  <g fill="#E8FBF6" opacity=".9">
+    <circle cx="268" cy="470" r="6"/>
+    <circle cx="300" cy="470" r="6"/>
+    <circle cx="332" cy="470" r="6"/>
+  </g>
+  <g fill="#FFFDF5" opacity=".9">
+    <path d="M300 290 l10 21 23 3 -17 16 4 23 -20 -11 -20 11 4 -23 -17 -16 23 -3 z"/>
+    <circle cx="262" cy="346" r="5"/>
+    <circle cx="338" cy="346" r="5"/>
+  </g>
+</svg>

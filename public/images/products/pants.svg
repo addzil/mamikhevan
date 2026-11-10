@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Ilustrasi celana jogger anak">
+  <defs>
+    <linearGradient id="pa-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#EDF3FF"/>
+      <stop offset="1" stop-color="#D8E4FF"/>
+    </linearGradient>
+    <linearGradient id="pa-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#7FA8F5"/>
+      <stop offset="1" stop-color="#4E7CE0"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#pa-bg)"/>
+  <circle cx="104" cy="112" r="30" fill="#FFFFFF" opacity=".55"/>
+  <circle cx="500" cy="104" r="18" fill="#FFFFFF" opacity=".45"/>
+  <circle cx="500" cy="494" r="40" fill="#FFFFFF" opacity=".3"/>
+  <circle cx="88" cy="468" r="16" fill="#FFFFFF" opacity=".5"/>
+  <path d="M214 158 H386 Q398 158 397 170 L392 266 L372 470 Q371 484 357 484 L320 484 Q308 484 306 472 L300 320 L294 472 Q292 484 280 484 L243 484 Q229 484 228 470 L208 266 L203 170 Q202 158 214 158 Z" fill="url(#pa-body)"/>
+  <rect x="214" y="158" width="172" height="34" rx="10" fill="#3D68C8"/>
+  <path d="M268 176 Q300 200 332 176" fill="none" stroke="#E9F1FF" stroke-width="10" stroke-linecap="round"/>
+  <path d="M262 208 Q300 240 338 208" fill="none" stroke="#E9F1FF" stroke-width="6" stroke-linecap="round" opacity=".6"/>
+  <g fill="#DCE9FF" opacity=".75">
+    <rect x="224" y="424" width="72" height="18" rx="9"/>
+    <rect x="304" y="424" width="72" height="18" rx="9"/>
+  </g>
+  <circle cx="300" cy="252" r="8" fill="#E9F1FF" opacity=".8"/>
+</svg>

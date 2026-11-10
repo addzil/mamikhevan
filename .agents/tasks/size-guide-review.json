@@ -1,0 +1,10 @@
+{
+  "verdict": "CHANGES_REQUESTED",
+  "findings": [
+    "Slug size_guide_types tidak divalidasi unique — SizeGuideRequest::rules() tidak menyertakan Rule::unique untuk kolom slug. Duplikat slug melempar QueryException 500 bukan validation error. Tambahkan Rule::unique('size_guide_types', 'slug')->ignore($sizeGuide?->id) ke rules().",
+    "Seeder per-row queries — SizeGuideSeeder menggunakan entries()->create() dalam loop (48 queries) inkonsisten dengan SizeGuideController::syncEntries() yang pakai bulk insert. Ganti ke createMany() atau array insert.",
+    "sizes_text field dikirim redundan ke server — ketika tidak ada size guide type yang dipilih, form mengirim sizes_text dan sizes[] hidden inputs bersamaan. Tidak menyebabkan bug tapi bisa dibersihkan dengan mendisable atau menghapus input sizes_text dari DOM submission.",
+    "Tidak ada test untuk size guide — AdminPanelTest tidak mencakup admin.size-guides.* routes maupun product detail dengan size guide table. Tambahkan test_size_guide_pages_render() dengan pola yang sudah ada di AdminPanelTest."
+  ],
+  "reviewDoc": "c:\\Users\\MAGUNG\\Herd\\kids-closet\\.agents\\tasks\\size-guide-review.md"
+}

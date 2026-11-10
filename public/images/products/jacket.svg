@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600" role="img" aria-label="Ilustrasi jaket denim anak">
+  <defs>
+    <linearGradient id="ja-bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#FFF7E2"/>
+      <stop offset="1" stop-color="#FFEAC0"/>
+    </linearGradient>
+    <linearGradient id="ja-body" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#5B84C4"/>
+      <stop offset="1" stop-color="#3E63A4"/>
+    </linearGradient>
+  </defs>
+  <rect width="600" height="600" fill="url(#ja-bg)"/>
+  <circle cx="100" cy="106" r="30" fill="#FFFFFF" opacity=".5"/>
+  <circle cx="500" cy="120" r="18" fill="#FFFFFF" opacity=".45"/>
+  <circle cx="504" cy="496" r="40" fill="#FFFFFF" opacity=".3"/>
+  <circle cx="90" cy="474" r="16" fill="#FFFFFF" opacity=".5"/>
+  <path d="M232 158 L270 158 L300 210 L330 158 L368 158 L424 206 L410 286 L372 268 L372 452 Q300 476 228 452 L228 268 L190 286 L176 206 Z" fill="url(#ja-body)"/>
+  <path d="M270 158 L300 210 L330 158 L318 232 L300 250 L282 232 Z" fill="#FFF7E2"/>
+  <path d="M300 250 L300 458" stroke="#2F4F87" stroke-width="5" opacity=".6"/>
+  <g fill="#EAF1FF" opacity=".9">
+    <circle cx="300" cy="286" r="5"/>
+    <circle cx="300" cy="330" r="5"/>
+    <circle cx="300" cy="374" r="5"/>
+    <circle cx="300" cy="418" r="5"/>
+  </g>
+  <g fill="#3E63A4" stroke="#EAF1FF" stroke-width="4" opacity=".95">
+    <rect x="238" y="300" width="52" height="52" rx="10"/>
+    <rect x="310" y="300" width="52" height="52" rx="10"/>
+  </g>
+  <path d="M228 268 Q300 288 372 268" fill="none" stroke="#EAF1FF" stroke-width="8" stroke-linecap="round" opacity=".5"/>
+</svg>
