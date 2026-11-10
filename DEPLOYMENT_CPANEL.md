@@ -1,13 +1,13 @@
 # Deployment cPanel
 
-Repository dan aplikasi Laravel berada di `/home/mamikhev/repositories/mamikhevan`. Document root domain berada di `/home/mamikhev/public_html`. `.cpanel.yml` membangun aplikasi di repository, lalu menyalin isi `public/` ke `public_html` dan mengarahkan `index.php` ke aplikasi.
+Source Git berada di `/home/mamikhev/repositories/mamikhevan`. Aplikasi Laravel berjalan di `/home/mamikhev/public_html/mamikhevan_shop`, sedangkan domain utama memakai `/home/mamikhev/public_html`. `.cpanel.yml` menyalin source ke folder aplikasi, membangun aset, menjalankan migrasi, dan memasang front controller serta `.htaccess` domain utama dari `cpanel-main-domain/`.
 
-## Persiapan sekali di server
+## Persiapan server
 
 1. Pastikan PHP, Composer, dan Node.js/npm tersedia untuk akun cPanel.
-2. Buat `/home/mamikhev/repositories/mamikhevan/.env` dari `.env.example`, lalu isi konfigurasi produksi. File ini tidak masuk Git.
-3. Atur minimal `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://domain-anda`, dan koneksi database yang benar. Untuk SQLite, pastikan direktori `database/` dapat ditulis oleh aplikasi. Untuk MySQL, isi `DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, dan `DB_PASSWORD`.
-4. Pada instalasi baru, jalankan `composer install --no-dev --optimize-autoloader --no-interaction`, lalu `php artisan key:generate` dari direktori repository untuk mengisi `APP_KEY` di `.env`. Jangan mengganti kunci ini pada deployment berikutnya karena sesi dan data terenkripsi yang lama bisa menjadi tidak terbaca.
-5. Jika `public_html/storage` sudah berupa direktori biasa, pindahkan isinya secara manual ke `storage/app/public` di repository sebelum deployment. Deployment akan berhenti dan tidak menghapus direktori tersebut.
+2. Siapkan `.env` produksi di `/home/mamikhev/public_html/mamikhevan_shop/.env`. Pada deployment pertama, skrip dapat menyalinnya sekali dari `/home/mamikhev/repositories/mamikhevan/.env` jika file di folder aplikasi belum ada. `.env` tidak masuk Git.
+3. Isi `APP_ENV=production`, `APP_DEBUG=false`, `APP_URL=https://domain-anda` tanpa `/mamikhevan_shop`, `APP_KEY`, dan koneksi database. Untuk SQLite, hapus baris `DB_DATABASE` atau isi dengan path absolut ke `database/database.sqlite` pada folder aplikasi. Jangan arahkan ke database lama di folder repo kecuali memang ingin memakai database tersebut.
+4. Pada instalasi baru yang belum memiliki `APP_KEY`, jalankan `composer install --no-dev --optimize-autoloader --no-interaction` dan `php artisan key:generate` sekali di folder aplikasi. Jangan mengganti kunci pada deployment berikutnya.
+5. Bila `mamikhevan_shop/public/storage` adalah folder biasa, pindahkan isinya ke `mamikhevan_shop/storage/app/public` sebelum deployment. Skrip tidak menghapus folder tersebut.
 
-Setelah persiapan, jalankan **Deploy HEAD Commit** melalui Git Version Control cPanel. Deployment berhenti dengan pesan kesalahan jika `.env` tidak ada atau nilai `APP_ENV`, `APP_DEBUG`, dan `APP_KEY` belum siap untuk produksi. Setelah deployment selesai, periksa halaman utama dan log di `storage/logs/` bila ada kesalahan.
+Jalankan **Update from Remote**, lalu **Deploy HEAD Commit** melalui Git Version Control cPanel. Deployment mempertahankan `.env`, `database/database.sqlite`, dan isi `storage/` pada folder aplikasi. Setelah selesai, periksa domain utama dan log Laravel di `mamikhevan_shop/storage/logs/` jika ada masalah.
