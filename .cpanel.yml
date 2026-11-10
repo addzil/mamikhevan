@@ -1,22 +1,18 @@
 ---
 deployment:
   tasks:
-    - export REPO_ROOT="/home/mamikhev/repositories/mamikhevan"
     - export APP_ROOT="/home/mamikhev/repositories/mamikhevan"
     - export PUBLIC_ROOT="/home/mamikhev/public_html"
-    - /bin/mkdir -p "$APP_ROOT" "$APP_ROOT/public" "$PUBLIC_ROOT"
-    - for d in app bootstrap config database resources routes storage; do /bin/mkdir -p "$APP_ROOT/$d"; /bin/cp -R "$REPO_ROOT/$d/." "$APP_ROOT/$d/"; done
-    - /bin/cp -R "$REPO_ROOT/public/." "$APP_ROOT/public"/
-    - /bin/cp "$REPO_ROOT/artisan" "$REPO_ROOT/composer.json" "$REPO_ROOT/composer.lock" "$REPO_ROOT/package.json" "$REPO_ROOT/package-lock.json" "$REPO_ROOT/vite.config.js" "$REPO_ROOT/tailwind.config.js" "$REPO_ROOT/postcss.config.js" "$REPO_ROOT/.env.example" "$APP_ROOT"/
-    - cd "$APP_ROOT" && [ -f .env ] || cp .env.example .env
+    - /bin/mkdir -p "$PUBLIC_ROOT"
+    - cd "$APP_ROOT" && test -f .env || { echo "Missing production .env in $APP_ROOT" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^APP_ENV=production$' .env && grep -Eq '^APP_DEBUG=false$' .env && grep -Eq '^APP_KEY=.+$' .env || { echo "Invalid production .env in $APP_ROOT" >&2; exit 1; }
     - cd "$APP_ROOT" && [ -f database/database.sqlite ] || touch database/database.sqlite
     - cd "$APP_ROOT" && composer install --no-dev --optimize-autoloader --no-interaction
-    - cd "$APP_ROOT" && grep -q '^APP_KEY=base64:' .env || php artisan key:generate --force
     - cd "$APP_ROOT" && npm ci --include=dev
     - cd "$APP_ROOT" && npm run build
     - cd "$APP_ROOT" && php artisan migrate --force
     - cd "$APP_ROOT" && php artisan config:cache && php artisan view:cache
+    - if [ -e "$PUBLIC_ROOT/storage" ] && [ ! -L "$PUBLIC_ROOT/storage" ]; then echo "Move the existing public_html/storage directory before deployment" >&2; exit 1; fi
     - /bin/cp -R "$APP_ROOT/public/." "$PUBLIC_ROOT"/
     - /bin/sed -i "s#__DIR__\.'/\.\./#'$APP_ROOT/#g" "$PUBLIC_ROOT/index.php"
-    - /bin/rm -rf "$PUBLIC_ROOT/storage"
     - /bin/ln -sfn "$APP_ROOT/storage/app/public" "$PUBLIC_ROOT/storage"
