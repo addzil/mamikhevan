@@ -9,13 +9,13 @@ deployment:
     - if [ ! -f "$APP_ROOT/.env" ] && [ -f "$REPO_ROOT/.env" ]; then /bin/cp "$REPO_ROOT/.env" "$APP_ROOT/.env"; fi
     - cd "$APP_ROOT" && test -f .env || { echo "Missing production .env in $APP_ROOT" >&2; exit 1; }
     - cd "$APP_ROOT" && grep -Eq '^APP_ENV=production$' .env && grep -Eq '^APP_DEBUG=false$' .env && grep -Eq '^APP_KEY=.+$' .env || { echo "Invalid production .env in $APP_ROOT" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^DB_CONNECTION=mysql$' .env || { echo "Set DB_CONNECTION=mysql in $APP_ROOT/.env" >&2; exit 1; }
     - for d in app config resources routes; do /bin/mkdir -p "$APP_ROOT/$d"; /bin/cp -R "$REPO_ROOT/$d/." "$APP_ROOT/$d/"; done
     - /bin/mkdir -p "$APP_ROOT/bootstrap/cache" "$APP_ROOT/database" "$APP_ROOT/public" "$APP_ROOT/storage/app/public" "$APP_ROOT/storage/framework/cache" "$APP_ROOT/storage/framework/sessions" "$APP_ROOT/storage/framework/views" "$APP_ROOT/storage/logs"
     - /bin/cp "$REPO_ROOT/bootstrap/app.php" "$REPO_ROOT/bootstrap/providers.php" "$APP_ROOT/bootstrap/"
     - for d in factories migrations seeders; do /bin/mkdir -p "$APP_ROOT/database/$d"; /bin/cp -R "$REPO_ROOT/database/$d/." "$APP_ROOT/database/$d/"; done
     - /bin/cp -R "$REPO_ROOT/public/." "$APP_ROOT/public/"
     - /bin/cp "$REPO_ROOT/artisan" "$REPO_ROOT/composer.json" "$REPO_ROOT/composer.lock" "$REPO_ROOT/package.json" "$REPO_ROOT/package-lock.json" "$REPO_ROOT/vite.config.js" "$REPO_ROOT/tailwind.config.js" "$REPO_ROOT/postcss.config.js" "$REPO_ROOT/.npmrc" "$APP_ROOT/"
-    - cd "$APP_ROOT" && [ -f database/database.sqlite ] || touch database/database.sqlite
     - cd "$APP_ROOT" && composer install --no-dev --optimize-autoloader --no-interaction
     - cd "$APP_ROOT" && npm ci --include=dev
     - cd "$APP_ROOT" && npm run build
