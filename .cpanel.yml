@@ -6,7 +6,6 @@ deployment:
     - export PUBLIC_ROOT="/home/mamikhev/public_html"
     - /bin/mkdir -p "$APP_ROOT" "$PUBLIC_ROOT"
     - if [ "$REPO_ROOT" != "$APP_ROOT" ]; then /bin/cp "$REPO_ROOT/.htaccess" "$APP_ROOT/.htaccess"; fi
-    - if [ ! -f "$APP_ROOT/.env" ] && [ -f "$REPO_ROOT/.env" ]; then /bin/cp "$REPO_ROOT/.env" "$APP_ROOT/.env"; fi
     - cd "$APP_ROOT" && test -f .env || { echo "Missing production .env in $APP_ROOT" >&2; exit 1; }
     - cd "$APP_ROOT" && grep -Eq '^APP_ENV=production[[:space:]]*$' .env || { echo "Set APP_ENV=production in $APP_ROOT/.env" >&2; exit 1; }
     - cd "$APP_ROOT" && grep -Eq '^APP_DEBUG=false[[:space:]]*$' .env || { echo "Set APP_DEBUG=false in $APP_ROOT/.env" >&2; exit 1; }

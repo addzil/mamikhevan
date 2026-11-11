@@ -1,8 +1,7 @@
 *.log
 .DS_Store
-.env
-.env.backup
-.env.production
+.env*
+!.env.example
 .phpactor.json
 .phpunit.result.cache
 /.codex
@@ -21,6 +20,9 @@
 /storage/*.key
 /storage/pail
 /vendor
+/*.zip
+/*.rar
+!/cpanel-runtime-no-terminal.zip
 _ide_helper.php
 Homestead.json
 Homestead.yaml
