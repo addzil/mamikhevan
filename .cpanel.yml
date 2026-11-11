@@ -25,6 +25,10 @@ deployment:
     - test -n "$PHP_BIN" && "$PHP_BIN" -r 'if (PHP_VERSION_ID < 80401) exit(1);' || { echo "PHP CLI 8.4.1 or newer is required for the prebuilt dependencies" >&2; exit 1; }
     - cd "$APP_ROOT" && test -f vendor/autoload.php || { echo "Missing prebuilt vendor/autoload.php in $APP_ROOT; extract the runtime ZIP first" >&2; exit 1; }
     - cd "$APP_ROOT" && test -f public/build/manifest.json || { echo "Missing prebuilt public/build/manifest.json in $APP_ROOT; extract the runtime ZIP first" >&2; exit 1; }
+    - /bin/mkdir -p "$PUBLIC_ROOT/build" "$PUBLIC_ROOT/images"
+    - /bin/cp -R "$APP_ROOT/public/build/." "$PUBLIC_ROOT/build/"
+    - /bin/cp -R "$APP_ROOT/public/images/." "$PUBLIC_ROOT/images/"
+    - /bin/cp "$APP_ROOT/public/favicon.ico" "$APP_ROOT/public/robots.txt" "$PUBLIC_ROOT/"
     - cd "$APP_ROOT" && "$PHP_BIN" artisan package:discover --no-ansi
     - cd "$APP_ROOT" && "$PHP_BIN" artisan migrate --force
     - cd "$APP_ROOT" && "$PHP_BIN" artisan config:cache && "$PHP_BIN" artisan view:cache
