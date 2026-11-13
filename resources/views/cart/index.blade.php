@@ -33,17 +33,16 @@
                 <a href="{{ route('products.index') }}" class="mt-6 inline-flex rounded-full bg-amber-500 px-7 py-3.5 text-sm font-extrabold text-white shadow-soft transition hover:bg-amber-600">
                     Mulai belanja
                 </a>
+                <p class="mt-4 text-xs font-semibold text-stone-400">
+                    Punya kode giveaway? <a href="{{ route('giveaway.claim') }}" class="font-extrabold text-amber-600 hover:underline">Klaim hadiah gratis</a>
+                </p>
             </div>
         @else
             <div class="mt-8 grid gap-6 lg:grid-cols-[1fr_360px] lg:gap-8">
                 <div class="space-y-4">
-                    @if ($shipping > 0)
-                        <div class="rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 text-xs font-semibold text-amber-700">
-                            Tambah <span class="font-extrabold">Rp{{ number_format(\App\Services\CartService::FREE_SHIPPING_MIN - $subtotal, 0, ',', '.') }}</span> lagi untuk mendapatkan gratis ongkir.
-                        </div>
-                    @else
+                    @if ($hasFreeShippingProduct)
                         <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-xs font-semibold text-emerald-700">
-                            Selamat! Pesananmu sudah memenuhi syarat gratis ongkir.
+                            Produk bebas ongkir tidak menambah ongkos kirim. Jika ada produk lain, ongkir dihitung dari produk yang tidak bebas ongkir.
                         </div>
                     @endif
 
@@ -65,6 +64,10 @@
                                                 &middot; Ukuran {{ $item['size'] }}
                                             @endif
                                         </p>
+                                        <p class="mt-1 text-[11px] font-semibold text-stone-400">Sisa ukuran ini: {{ $item['available_stock'] }} unit</p>
+                                        @if ($item['product']->free_shipping)
+                                            <span class="mt-2 inline-flex rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-extrabold text-emerald-700">Bebas ongkir</span>
+                                        @endif
                                     </div>
                                     <p class="font-display text-lg font-bold text-stone-900">{{ $item['product']->price_formatted }}</p>
                                 </div>
@@ -77,7 +80,7 @@
                                             <input type="hidden" name="key" value="{{ $item['key'] }}">
                                             <label for="qty-{{ $loop->index }}" class="sr-only">Jumlah {{ $item['product']->name }}</label>
                                             <input id="qty-{{ $loop->index }}" type="number" name="quantity" value="{{ $item['quantity'] }}"
-                                                   min="1" max="{{ max(1, $item['product']->stock) }}"
+                                                   min="1" max="{{ max(1, $item['available_stock']) }}"
                                                    class="w-16 rounded-xl border-yellow-200 py-2 text-center text-sm font-bold focus:border-amber-300 focus:ring-amber-200">
                                             <button type="submit" class="rounded-xl border border-yellow-200 px-3 py-2 text-xs font-extrabold text-stone-600 transition hover:border-amber-200 hover:text-amber-600">
                                                 Update
@@ -123,25 +126,13 @@
                             </div>
                             <div class="flex items-center justify-between gap-4">
                                 <dt class="font-semibold text-stone-500">Ongkos kirim</dt>
-                                <dd class="font-extrabold {{ $shipping === 0 ? 'text-emerald-600' : 'text-stone-800' }}">
-                                    {{ $shipping === 0 ? 'Gratis' : 'Rp'.number_format($shipping, 0, ',', '.') }}
-                                </dd>
+                                <dd class="font-extrabold text-stone-800">Dihitung di checkout</dd>
                             </div>
-                            @if ($shipping > 0)
-                                <div>
-                                    <div class="h-2 overflow-hidden rounded-full bg-yellow-100">
-                                        <div class="h-full rounded-full bg-gradient-to-r from-amber-400 to-amber-400" style="width: {{ min(100, round(($subtotal / \App\Services\CartService::FREE_SHIPPING_MIN) * 100)) }}%"></div>
-                                    </div>
-                                    <p class="mt-2 text-[11px] font-semibold text-stone-400">
-                                        {{ round(($subtotal / \App\Services\CartService::FREE_SHIPPING_MIN) * 100) }}% menuju gratis ongkir
-                                    </p>
-                                </div>
-                            @endif
                         </dl>
 
                         <div class="mt-5 flex items-end justify-between border-t border-dashed border-yellow-200 pt-5">
-                            <p class="text-sm font-extrabold text-stone-900">Total</p>
-                            <p class="font-display text-2xl font-extrabold text-amber-600">Rp{{ number_format($total, 0, ',', '.') }}</p>
+                            <p class="text-sm font-extrabold text-stone-900">Subtotal</p>
+                            <p class="font-display text-2xl font-extrabold text-amber-600">Rp{{ number_format($subtotal, 0, ',', '.') }}</p>
                         </div>
 
                         <a href="{{ route('checkout.index') }}"
@@ -149,6 +140,10 @@
                             Lanjut ke checkout
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
                         </a>
+
+                        <p class="mt-3 text-center text-[11px] font-semibold text-stone-400">
+                            Punya kode giveaway? <a href="{{ route('giveaway.claim') }}" class="font-extrabold text-amber-600 hover:underline">Klaim hadiah</a>
+                        </p>
 
                         <p class="mt-4 flex items-center justify-center gap-1.5 text-[11px] font-semibold text-stone-400">
                             <svg class="h-3.5 w-3.5 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>

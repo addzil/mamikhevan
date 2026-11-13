@@ -55,7 +55,7 @@ if (charts) {
                 labels: charts.monthly.labels,
                 datasets: [
                     {
-                        label: 'Pendapatan',
+                        label: 'Nilai pesanan',
                         data: charts.monthly.revenue,
                         backgroundColor: 'rgba(234, 179, 8, 0.78)',
                         hoverBackgroundColor: '#ca8a04',
@@ -121,7 +121,7 @@ if (charts) {
                 labels: charts.yearly.labels,
                 datasets: [
                     {
-                        label: 'Pendapatan',
+                        label: 'Nilai pesanan',
                         data: charts.yearly.revenue,
                         backgroundColor: 'rgba(245, 158, 11, 0.8)',
                         hoverBackgroundColor: '#d97706',
@@ -225,7 +225,7 @@ if (charts) {
                 labels: charts.margin.labels,
                 datasets: [
                     {
-                        label: 'Pendapatan produk',
+                        label: 'Penjualan produk bersih',
                         data: charts.margin.revenue,
                         backgroundColor: 'rgba(245, 158, 11, 0.8)',
                         borderRadius: 5,

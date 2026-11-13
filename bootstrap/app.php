@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\EnsureUserHasAdminRole;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\SecurityHeaders;
 use Illuminate\Foundation\Application;
@@ -14,12 +15,17 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
+        $middleware->redirectGuestsTo(fn (Request $request): string => $request->is('admin', 'admin/*')
+            ? route('admin.login')
+            : route('login'));
+
         $middleware->web(append: [
             SecurityHeaders::class,
         ]);
 
         $middleware->alias([
             'admin' => EnsureUserIsAdmin::class,
+            'admin-role' => EnsureUserHasAdminRole::class,
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions): void {

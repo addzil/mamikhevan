@@ -94,7 +94,7 @@ class ProductSeeder extends Seeder
                 'is_featured' => true,
             ],
             [
-                'category' => 'atasan',
+                'category' => 'setelan',
                 'name' => 'Setelan Rainbow',
                 'slug' => 'setelan-rainbow',
                 'description' => 'Setelan kaos dan celana pendek bermotif pelangi. Warna cerah tidak mudah pudar, bahan adem, dan jahitan kuat untuk anak yang doyan bergerak.',
@@ -208,6 +208,16 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($products as $data) {
+            $sizes = $data['sizes'] ?? [];
+            $sizeStocks = [];
+            if ($sizes !== []) {
+                $baseStockPerSize = intdiv((int) $data['stock'], count($sizes));
+                $remainingStock = (int) $data['stock'] % count($sizes);
+                foreach ($sizes as $index => $size) {
+                    $sizeStocks[$size] = $baseStockPerSize + ($index < $remainingStock ? 1 : 0);
+                }
+            }
+
             Product::updateOrCreate(
                 ['slug' => $data['slug']],
                 [
@@ -218,6 +228,8 @@ class ProductSeeder extends Seeder
                     'cost_price' => $data['cost_price'],
                     'compare_price' => $data['compare_price'],
                     'stock' => $data['stock'],
+                    'size_stocks' => $sizes !== [] ? $sizeStocks : null,
+                    'unallocated_stock' => 0,
                     'sizes' => $data['sizes'],
                     'gender' => $data['gender'],
                     'age_group' => $data['age_group'],

@@ -76,6 +76,58 @@ class ProductController extends Controller
     public function update(ProductRequest $request, Product $product): RedirectResponse
     {
         $data = $this->productData($request);
+        unset($data['stock'], $data['size_stocks'], $data['unallocated_stock']);
+
+        $oldSizes = $product->sizeList();
+        $newSizes = $data['sizes'] ?? [];
+        $currentSizeStocks = $product->sizeStockMap();
+        $removedSizesWithStock = collect(array_diff($oldSizes, $newSizes))
+            ->filter(fn (string $size): bool => ($currentSizeStocks[$size] ?? 0) > 0)
+            ->values();
+
+        if ($removedSizesWithStock->isNotEmpty()) {
+            return back()->withErrors([
+                'sizes' => 'Kosongkan stok ukuran '.implode(', ', $removedSizesWithStock->all()).' melalui Opname Stok sebelum menghapus ukuran tersebut.',
+            ])->withInput();
+        }
+
+        $removedSizesWithOrders = collect(array_diff($oldSizes, $newSizes))
+            ->filter(function (string $size) use ($product): bool {
+                return $product->orderItems()->where('size', $size)->exists();
+            })
+            ->values();
+
+        if ($removedSizesWithOrders->isNotEmpty()) {
+            return back()->withErrors([
+                'sizes' => 'Ukuran '.implode(', ', $removedSizesWithOrders->all()).' sudah tercatat dalam pesanan dan tidak dapat dihapus dari riwayat produk.',
+            ])->withInput();
+        }
+
+        if ($product->unallocated_stock > 0 && $newSizes === []) {
+            return back()->withErrors([
+                'sizes' => 'Alokasikan dahulu stok lama ke setiap ukuran melalui Opname Stok sebelum menghapus semua ukuran.',
+            ])->withInput();
+        }
+
+        $nextSizeStocks = collect($newSizes)
+            ->mapWithKeys(fn (string $size): array => [$size => (int) ($currentSizeStocks[$size] ?? 0)])
+            ->all();
+        $unallocatedStock = (int) $product->unallocated_stock;
+
+        if ($oldSizes === [] && $newSizes !== []) {
+            $unallocatedStock += (int) $product->stock;
+        }
+
+        if ($newSizes !== []) {
+            $data['size_stocks'] = $nextSizeStocks;
+            $data['unallocated_stock'] = $unallocatedStock;
+            $data['stock'] = array_sum($nextSizeStocks) + $unallocatedStock;
+        } elseif ($oldSizes !== []) {
+            $data['size_stocks'] = null;
+            $data['unallocated_stock'] = 0;
+            $data['stock'] = 0;
+        }
+
         $product->load('images');
 
         $removedIds = (array) $request->input('removed_images', []);
@@ -148,6 +200,24 @@ class ProductController extends Controller
         $data = $request->validated();
 
         unset($data['images'], $data['removed_images'], $data['remove_image']);
+
+        if ($request->route('product') === null) {
+            $sizes = $data['sizes'] ?? [];
+
+            if ($sizes !== []) {
+                $stocksByIndex = array_values($data['size_stocks'] ?? []);
+                $data['size_stocks'] = collect($sizes)
+                    ->mapWithKeys(fn (string $size, int $index): array => [$size => (int) ($stocksByIndex[$index] ?? 0)])
+                    ->all();
+                $data['stock'] = array_sum($data['size_stocks']);
+            } else {
+                $data['size_stocks'] = null;
+            }
+
+            $data['unallocated_stock'] = 0;
+        }
+
+        unset($data['size_stocks_raw']);
 
         return $data;
     }

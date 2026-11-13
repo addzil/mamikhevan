@@ -1,6 +1,7 @@
 <x-guest-layout>
+    <h1 class="font-display text-2xl font-extrabold text-stone-900">Lupa kata sandi?</h1>
     <div class="mb-4 text-sm text-gray-600">
-        {{ __('Forgot your password? No problem. Just let us know your email address and we will email you a password reset link that will allow you to choose a new one.') }}
+        Masukkan email akun Anda. Kami akan mengirim tautan untuk membuat kata sandi baru.
     </div>
 
     <!-- Session Status -->
@@ -18,7 +19,7 @@
 
         <div class="flex items-center justify-end mt-4">
             <x-primary-button>
-                {{ __('Email Password Reset Link') }}
+                Kirim tautan reset
             </x-primary-button>
         </div>
     </form>

@@ -69,6 +69,16 @@ class ProductController extends Controller
 
         $product->load(['category', 'images', 'sizeGuideType.entries']);
 
+        $reviewStats = $product->visibleReviews()
+            ->selectRaw('COUNT(*) as total, AVG(rating) as rating_avg, AVG(product_quality) as product_quality_avg, AVG(shipping_speed) as shipping_speed_avg, AVG(service) as service_avg')
+            ->first();
+
+        $productReviews = $product->visibleReviews()
+            ->orderByDesc('reviewed_at')
+            ->latest()
+            ->take(10)
+            ->get();
+
         $relatedProducts = Product::query()
             ->active()
             ->whereKeyNot($product->id)
@@ -81,6 +91,6 @@ class ProductController extends Controller
             ->take(4)
             ->get();
 
-        return view('products.show', compact('product', 'relatedProducts'));
+        return view('products.show', compact('product', 'relatedProducts', 'reviewStats', 'productReviews'));
     }
 }

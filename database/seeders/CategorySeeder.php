@@ -29,6 +29,12 @@ class CategorySeeder extends Seeder
                 'description' => 'Celana dan jogger lentur untuk anak aktif.',
             ],
             [
+                'name' => 'Setelan',
+                'slug' => 'setelan',
+                'icon' => '🧸',
+                'description' => 'Paduan atasan dan bawahan siap pakai untuk anak.',
+            ],
+            [
                 'name' => 'Dress & Rok',
                 'slug' => 'dress-rok',
                 'icon' => '👗',
@@ -49,7 +55,7 @@ class CategorySeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            Category::updateOrCreate(
+            Category::firstOrCreate(
                 ['slug' => $category['slug']],
                 $category + ['is_active' => true]
             );

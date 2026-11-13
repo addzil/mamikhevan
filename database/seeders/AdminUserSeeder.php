@@ -5,19 +5,29 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use RuntimeException;
 
 class AdminUserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::updateOrCreate(
-            ['email' => 'admin@mamikhevanshop.id'],
-            [
+        $administrator = User::firstOrNew(['email' => config('shop.admin.email')]);
+
+        if (! $administrator->exists) {
+            $password = config('shop.admin.password');
+
+            if (blank($password)) {
+                throw new RuntimeException('Set ADMIN_PASSWORD before creating the initial administrator account.');
+            }
+
+            $administrator->fill([
                 'name' => 'Admin Mamikhevanshop',
-                'password' => Hash::make('Admin#2026'),
-                'is_admin' => true,
-                'email_verified_at' => now(),
-            ]
-        );
+                'password' => Hash::make($password),
+                'role' => User::ROLE_ADMINISTRATOR,
+            ]);
+            $administrator->is_admin = true;
+            $administrator->email_verified_at = now();
+            $administrator->save();
+        }
     }
 }

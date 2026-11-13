@@ -2,11 +2,11 @@
     <div class="text-center">
         <span class="inline-flex items-center gap-1.5 rounded-full bg-amber-50 px-3 py-1 text-[10px] font-extrabold uppercase tracking-[0.18em] text-amber-600 ring-1 ring-amber-100">
             <svg class="h-3 w-3" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 1 0-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 0 0 2.25-2.25v-6.75a2.25 2.25 0 0 0-2.25-2.25H6.75a2.25 2.25 0 0 0-2.25 2.25v6.75a2.25 2.25 0 0 0 2.25 2.25Z" /></svg>
-            Panel Admin
+            Akun Pembeli
         </span>
         <h1 class="mt-4 font-display text-2xl font-extrabold text-stone-900">Selamat datang kembali</h1>
         <p class="mt-1.5 text-sm font-semibold leading-6 text-stone-400">
-            Masuk untuk mengelola katalog, pesanan, dan pesan pelanggan.
+            Masuk untuk melihat pesanan dan mengelola profil Anda.
         </p>
     </div>
 
@@ -18,7 +18,7 @@
         <div>
             <label for="email" class="text-xs font-extrabold uppercase tracking-wider text-stone-500">Email</label>
             <input id="email" type="email" name="email" value="{{ old('email') }}" required autofocus autocomplete="username"
-                   placeholder="admin@mamikhevanshop.id"
+                   placeholder="email@contoh.com"
                    class="mt-2 w-full rounded-xl border-stone-200 py-2.5 text-sm focus:border-amber-300 focus:ring-amber-200">
             @error('email')
                 <p class="mt-1.5 text-xs font-bold text-amber-600">{{ $message }}</p>
@@ -57,9 +57,12 @@
         <button type="submit"
                 class="inline-flex w-full items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-3 text-sm font-extrabold text-white shadow-lg shadow-amber-500/25 transition hover:bg-amber-600">
             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6a2.25 2.25 0 0 0-2.25 2.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3 0 3-3m0 0-3-3m3 3H9" /></svg>
-            Masuk ke panel admin
+            Masuk ke akun
         </button>
     </form>
+
+    <p class="mt-5 text-center text-sm text-stone-500">Belum punya akun? <a href="{{ route('register') }}" class="font-bold text-amber-600 hover:underline">Daftar sebagai pembeli</a></p>
+    <p class="mt-5 text-center text-[10px] font-semibold text-stone-300"><a href="{{ route('admin.login') }}" class="transition hover:text-stone-500">Akses staf</a></p>
 
     @if (app()->environment('local'))
         <div class="mt-6 rounded-2xl border border-dashed border-yellow-200 bg-yellow-50/70 p-4">

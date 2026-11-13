@@ -47,6 +47,7 @@
                         <th class="px-5 py-3.5">Kode</th>
                         <th class="px-5 py-3.5">Pelanggan</th>
                         <th class="px-5 py-3.5">Produk</th>
+                        <th class="px-5 py-3.5">Kurir</th>
                         <th class="px-5 py-3.5">Total</th>
                         <th class="px-5 py-3.5">Pembayaran</th>
                         <th class="px-5 py-3.5">Status</th>
@@ -65,19 +66,37 @@
                                 <p class="text-[11px] font-semibold text-stone-400">{{ $order->customer_phone }}</p>
                             </td>
                             <td class="whitespace-nowrap px-5 py-4 text-xs font-bold text-stone-500">{{ $order->items()->count() }} item</td>
+                            <td class="whitespace-nowrap px-5 py-4">
+                                @if ($order->shipping_courier)
+                                    <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-extrabold {{ $order->courierBadgeClasses() }}">{{ $order->courierLabel() }}</span>
+                                    @if ($order->shipping_tracking_number)
+                                        <p class="mt-1 font-mono text-[10px] font-bold text-stone-400">{{ $order->shipping_tracking_number }}</p>
+                                    @endif
+                                @else
+                                    <span class="text-[10px] font-bold text-stone-400">Belum dipilih</span>
+                                @endif
+                            </td>
                             <td class="whitespace-nowrap px-5 py-4 text-xs font-extrabold text-stone-800">{{ $order->total_formatted }}</td>
-                            <td class="whitespace-nowrap px-5 py-4 text-xs font-bold text-stone-500">{{ $order->payment_method === 'cod' ? 'COD' : 'Transfer' }}</td>
+                            <td class="whitespace-nowrap px-5 py-4 text-xs font-bold text-stone-500">
+                                {{ $order->payment_method === 'cod' ? 'COD' : 'Transfer' }}
+                                @if ($order->payment_proof_path)
+                                    <span class="mt-1 block text-[10px] font-extrabold text-emerald-700">Bukti bayar masuk</span>
+                                @endif
+                            </td>
                             <td class="whitespace-nowrap px-5 py-4">
                                 <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-extrabold ring-1 {{ $order->statusColor() }}">{{ $order->statusLabel() }}</span>
                             </td>
                             <td class="whitespace-nowrap px-5 py-4 text-xs font-semibold text-stone-400">{{ $order->created_at->format('d/m/Y') }}</td>
                             <td class="px-5 py-4 text-right">
-                                <a href="{{ route('admin.orders.show', $order) }}" class="inline-flex rounded-lg border border-stone-200 px-2.5 py-1.5 text-[11px] font-extrabold text-stone-600 transition hover:border-amber-200 hover:text-yellow-700">Detail</a>
+                                <div class="inline-flex items-center gap-1.5">
+                                    <a href="{{ route('admin.orders.shipping-label', $order) }}" target="_blank" rel="noopener" class="inline-flex rounded-lg border border-stone-200 px-2.5 py-1.5 text-[11px] font-extrabold text-stone-600 transition hover:border-amber-200 hover:text-yellow-700">Resi</a>
+                                    <a href="{{ route('admin.orders.show', $order) }}" class="inline-flex rounded-lg border border-stone-200 px-2.5 py-1.5 text-[11px] font-extrabold text-stone-600 transition hover:border-amber-200 hover:text-yellow-700">Detail</a>
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="px-5 py-16 text-center">
+                            <td colspan="9" class="px-5 py-16 text-center">
                                 <p class="font-display text-lg font-bold text-stone-700">Belum ada pesanan</p>
                                 <p class="mt-1 text-xs font-semibold text-stone-400">Pesanan baru akan muncul otomatis di sini.</p>
                             </td>

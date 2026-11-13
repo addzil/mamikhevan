@@ -35,8 +35,8 @@
                         <img src="{{ asset('images/products/shoes.svg') }}" alt="Ilustrasi sepatu anak" class="mt-4 aspect-square w-full rounded-[2rem] border border-white object-cover shadow-xl shadow-amber-100">
                     </div>
                     <div class="absolute -bottom-6 left-1/2 -translate-x-1/2 rounded-2xl border border-yellow-100 bg-white px-5 py-3 text-center shadow-xl">
-                        <p class="font-display text-2xl font-extrabold text-amber-600">1.200+</p>
-                        <p class="text-[10px] font-extrabold uppercase tracking-wider text-stone-400">orang tua bahagia</p>
+                        <p class="font-display text-2xl font-extrabold text-amber-600">{{ number_format($shippedOrders, 0, ',', '.') }}</p>
+                        <p class="text-[10px] font-extrabold uppercase tracking-wider text-stone-400">pesanan terkirim</p>
                     </div>
                 </div>
             </div>
@@ -46,9 +46,9 @@
     <section class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
             @foreach ([
-                ['value' => '1.200+', 'label' => 'Pesanan terkirim', 'color' => 'text-amber-600'],
-                ['value' => '4,9/5', 'label' => 'Rating pelanggan', 'color' => 'text-amber-600'],
-                ['value' => '6', 'label' => 'Kategori produk', 'color' => 'text-teal-500'],
+                ['value' => number_format($shippedOrders, 0, ',', '.'), 'label' => 'Pesanan terkirim', 'color' => 'text-amber-600'],
+                ['value' => $reviewCount > 0 ? number_format((float) $averageRating, 1, ',', '.').'/5' : 'Belum ada', 'label' => 'Rating pelanggan', 'color' => 'text-amber-600'],
+                ['value' => number_format($categoryCount, 0, ',', '.'), 'label' => 'Kategori produk', 'color' => 'text-teal-500'],
                 ['value' => '< 24 jam', 'label' => 'Respons admin', 'color' => 'text-sky-500'],
             ] as $stat)
                 <div class="rounded-3xl border border-yellow-100 bg-white p-6 text-center shadow-sm">
@@ -56,6 +56,23 @@
                     <p class="mt-1 text-xs font-extrabold uppercase tracking-wider text-stone-400">{{ $stat['label'] }}</p>
                 </div>
             @endforeach
+        </div>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-4 pb-16 sm:px-6 lg:px-8">
+        <div class="text-center">
+            <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-amber-400">Koleksi kami</p>
+            <h2 class="mt-2 font-display text-3xl font-extrabold text-stone-900 sm:text-4xl">Kategori produk</h2>
+            <p class="mt-2 text-sm text-stone-500">Pilihan kategori yang tersedia di katalog saat ini.</p>
+        </div>
+        <div class="mt-7 flex flex-wrap justify-center gap-3">
+            @forelse ($categories as $category)
+                <a href="{{ route('products.index', ['category' => $category->slug]) }}" class="rounded-full border border-yellow-100 bg-white px-5 py-2.5 text-sm font-bold text-stone-700 shadow-sm transition hover:border-amber-300 hover:text-amber-700">
+                    {{ $category->icon }} {{ $category->name }}
+                </a>
+            @empty
+                <p class="text-sm text-stone-500">Kategori produk akan segera tersedia.</p>
+            @endforelse
         </div>
     </section>
 

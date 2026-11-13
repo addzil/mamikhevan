@@ -3,16 +3,18 @@
 @section('title', 'Mamikhevanshop — Pakaian Anak Lucu, Nyaman & Terjangkau')
 
 @section('content')
+    @if ($hero)
     @php
-        $heroImages = [
-            ['src' => 'images/products/dress.svg', 'name' => 'Dress Bunga Cherry', 'price' => 'Rp149.000', 'class' => 'left-0 top-8 w-40 rotate-[-6deg] sm:w-48', 'label' => 'Best seller'],
-            ['src' => 'images/products/tshirt.svg', 'name' => 'Kaos Little Dino', 'price' => 'Rp89.000', 'class' => 'right-0 top-0 w-36 rotate-[7deg] sm:w-44', 'label' => 'Favorit'],
-            ['src' => 'images/products/onesie.svg', 'name' => 'Onesie Cloud Soft', 'price' => 'Rp129.000', 'class' => 'bottom-0 left-1/2 w-40 -translate-x-1/2 rotate-[3deg] sm:w-52', 'label' => 'Newborn'],
-        ];
+        $heroImages = $hero->cards ?? [];
+        $heroImageClasses = $hero->design === 'single'
+            ? ['left-1/2 top-1/2 w-56 -translate-x-1/2 -translate-y-1/2 sm:w-72', 'hidden', 'hidden']
+            : ($hero->design === 'stacked'
+                ? ['left-1/2 top-0 w-40 -translate-x-1/2 sm:w-48', 'bottom-0 left-0 w-36 rotate-[-5deg] sm:w-44', 'bottom-0 right-0 w-36 rotate-[5deg] sm:w-44']
+                : ['left-0 top-8 w-40 rotate-[-6deg] sm:w-48', 'right-0 top-0 w-36 rotate-[7deg] sm:w-44', 'bottom-0 left-1/2 w-40 -translate-x-1/2 rotate-[3deg] sm:w-52']);
     @endphp
 
     <section class="relative overflow-hidden">
-        <div class="pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full bg-amber-200/40 blur-3xl"></div>
+        <div @class(['pointer-events-none absolute -left-24 top-10 h-72 w-72 rounded-full blur-3xl', 'bg-amber-200/40' => $hero->background === 'warm', 'bg-teal-200/40' => $hero->background === 'mint', 'bg-violet-200/40' => $hero->background === 'lavender'])></div>
         <div class="pointer-events-none absolute -right-20 top-40 h-80 w-80 rounded-full bg-amber-200/40 blur-3xl"></div>
         <div class="pointer-events-none absolute bottom-0 left-1/3 h-64 w-64 rounded-full bg-teal-200/30 blur-3xl"></div>
 
@@ -20,23 +22,15 @@
             <div class="text-center lg:text-left">
                 <span class="inline-flex items-center gap-2 rounded-full border border-amber-200 bg-white px-4 py-2 text-xs font-extrabold uppercase tracking-[0.18em] text-amber-600 shadow-sm">
                     <span class="h-2 w-2 animate-pulse rounded-full bg-amber-400"></span>
-                    Koleksi baru 2026
+                    {{ $hero->eyebrow }}
                 </span>
 
                 <h1 class="mt-6 font-display text-4xl font-extrabold leading-[1.1] tracking-tight text-stone-900 text-balance sm:text-5xl lg:text-6xl">
-                    Baju anak
-                    <span class="relative inline-block text-amber-600">
-                        lucu
-                        <svg class="absolute -bottom-2 left-0 w-full" height="12" viewBox="0 0 200 12" fill="none" preserveAspectRatio="none" aria-hidden="true">
-                            <path d="M2 9.5C40 3.5 92 2.5 198 6.5" stroke="#FCD34D" stroke-width="5" stroke-linecap="round"/>
-                        </svg>
-                    </span>,
-                    nyaman,
-                    <br class="hidden sm:block"> siap dipakai.
+                    {{ $hero->headline }}
                 </h1>
 
                 <p class="mx-auto mt-6 max-w-xl text-base leading-8 text-stone-500 sm:text-lg lg:mx-0">
-                    Katalog pakaian anak dengan bahan lembut bersertifikat, jahitan aman, dan desain ceria. Temukan ukuran yang pas untuk si kecil tanpa ribet.
+                    {{ $hero->description }}
                 </p>
 
                 <div class="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row lg:justify-start">
@@ -48,6 +42,10 @@
                     <a href="#kategori"
                        class="inline-flex w-full items-center justify-center gap-2 rounded-full border border-yellow-200 bg-white px-7 py-3.5 text-sm font-extrabold text-stone-700 transition hover:border-amber-200 hover:text-amber-600 sm:w-auto">
                         Lihat Kategori
+                    </a>
+                    <a href="{{ route('orders.track') }}"
+                       class="inline-flex w-full items-center justify-center gap-2 rounded-full border border-amber-200 bg-amber-50 px-7 py-3.5 text-sm font-extrabold text-amber-700 transition hover:bg-amber-100 sm:w-auto">
+                        Lacak Pesanan
                     </a>
                 </div>
 
@@ -69,36 +67,51 @@
                 </div>
             </div>
 
-            <div class="relative mx-auto h-[420px] w-full max-w-lg sm:h-[480px] lg:h-[540px]" aria-hidden="true">
+            <div @class(['relative mx-auto h-[420px] w-full max-w-lg sm:h-[480px] lg:h-[540px]', 'rounded-[3rem] bg-gradient-to-br from-amber-100 to-yellow-50' => $hero->background === 'warm', 'rounded-[3rem] bg-gradient-to-br from-teal-100 to-emerald-50' => $hero->background === 'mint', 'rounded-[3rem] bg-gradient-to-br from-violet-100 to-pink-50' => $hero->background === 'lavender'])>
                 <div class="absolute inset-8 rounded-[3rem] bg-gradient-to-br from-amber-200 via-yellow-100 to-amber-100 opacity-80 blur-sm"></div>
 
-                @foreach ($heroImages as $image)
-                    <div class="absolute {{ $image['class'] }} overflow-hidden rounded-[2rem] border border-white/80 bg-white p-2 shadow-2xl shadow-amber-200/50 transition duration-500 hover:rotate-0 hover:scale-[1.03]">
+                @foreach ($heroImages as $index => $image)
+                    @php($product = $heroProducts->get($image['product_id'] ?? null))
+                    @if ($product)
+                        <a href="{{ route('products.show', $product) }}" aria-label="Lihat detail {{ $product->name }}" class="absolute {{ $heroImageClasses[$index] ?? 'hidden' }} overflow-hidden rounded-[2rem] border border-white/80 bg-white p-2 shadow-2xl shadow-amber-200/50 transition duration-500 hover:rotate-0 hover:scale-[1.03]">
+                    @else
+                    <div class="absolute {{ $heroImageClasses[$index] ?? 'hidden' }} overflow-hidden rounded-[2rem] border border-white/80 bg-white p-2 shadow-2xl shadow-amber-200/50 transition duration-500 hover:rotate-0 hover:scale-[1.03]">
+                    @endif
                         <div class="overflow-hidden rounded-[1.6rem]">
-                            <img src="{{ asset($image['src']) }}" alt="{{ $image['name'] }}" class="aspect-square w-full object-cover">
+                            <img src="{{ $product?->image_url ?? asset($image['image'] ?? 'images/products/dress.svg') }}" alt="{{ $product?->name ?? $image['name'] ?? '' }}" class="aspect-square w-full object-cover">
                         </div>
                         <div class="flex items-center justify-between gap-2 px-2 pb-1 pt-3">
                             <div>
                                 <p class="text-[9px] font-extrabold uppercase tracking-wider text-amber-400">{{ $image['label'] }}</p>
-                                <p class="font-display text-sm font-bold leading-tight text-stone-800">{{ $image['name'] }}</p>
+                                <p class="font-display text-sm font-bold leading-tight text-stone-800">{{ $product?->name ?? $image['name'] ?? '' }}</p>
                             </div>
-                            <p class="text-xs font-extrabold text-amber-600">{{ $image['price'] }}</p>
+                            @if ($product)<p class="text-xs font-extrabold text-amber-600">{{ $product->price_formatted }}</p>@endif
                         </div>
-                    </div>
+                    @if ($product)
+                        </a>
+                    @else
+                        </div>
+                    @endif
                 @endforeach
 
+                <div class="absolute left-[34%] top-[8%] z-20 -translate-x-1/2 -translate-y-1/2 animate-float rounded-full border border-amber-100 bg-white/95 px-3 py-2 text-center shadow-xl backdrop-blur-sm sm:px-4">
+                    <p class="text-[9px] font-extrabold uppercase tracking-[0.16em] text-amber-500">Belanja nyaman</p>
+                    <p class="font-display text-[11px] font-extrabold text-stone-800 sm:text-xs">Online shop terpercaya</p>
+                </div>
+
                 <div class="absolute right-2 top-1/2 z-10 animate-float rounded-2xl border border-yellow-100 bg-white px-4 py-3 shadow-xl sm:right-0">
-                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-stone-400">Bahan aman</p>
-                    <p class="font-display text-sm font-bold text-stone-800">OEKO-TEX&reg;</p>
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-stone-400">Bahan</p>
+                    <p class="font-display text-sm font-bold text-stone-800">Brand premium</p>
                 </div>
 
                 <div class="absolute bottom-16 left-0 z-10 animate-float-slow rounded-2xl border border-yellow-100 bg-white px-4 py-3 shadow-xl">
-                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-stone-400">Pengiriman</p>
-                    <p class="font-display text-sm font-bold text-stone-800">1-3 hari kerja</p>
+                    <p class="text-[10px] font-extrabold uppercase tracking-wider text-stone-400">Kualitas</p>
+                    <p class="font-display text-sm font-bold text-stone-800">Kualitas terbaik</p>
                 </div>
             </div>
         </div>
     </section>
+    @endif
 
     <section id="kategori" class="mx-auto max-w-7xl px-4 py-16 sm:px-6 lg:px-8">
         <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
@@ -149,45 +162,6 @@
         </div>
     </section>
 
-    <section class="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
-        <div class="relative overflow-hidden rounded-[2.5rem] bg-gradient-to-br from-stone-900 via-stone-800 to-amber-900 px-6 py-12 sm:px-12 lg:px-16">
-            <div class="pointer-events-none absolute -right-16 -top-16 h-64 w-64 rounded-full bg-amber-500/30 blur-2xl"></div>
-            <div class="pointer-events-none absolute -bottom-24 left-1/3 h-72 w-72 rounded-full bg-yellow-400/20 blur-2xl"></div>
-
-            <div class="relative grid items-center gap-10 lg:grid-cols-2">
-                <div>
-                    <span class="inline-flex rounded-full bg-white/10 px-4 py-1.5 text-xs font-extrabold uppercase tracking-[0.2em] text-amber-200">Paket hemat</span>
-                    <h2 class="mt-4 font-display text-3xl font-extrabold leading-tight text-white sm:text-4xl">
-                        Belanja Rp300.000,<br>ongkir kami yang tanggung.
-                    </h2>
-                    <p class="mt-4 max-w-md text-sm leading-7 text-stone-300">
-                        Isi lemari si kecil sekaligus. Gratis ongkir otomatis untuk semua pesanan mulai Rp300.000, tanpa kode promo.
-                    </p>
-                    <a href="{{ route('products.index') }}"
-                       class="mt-7 inline-flex items-center gap-2 rounded-full bg-white px-6 py-3 text-sm font-extrabold text-stone-900 transition hover:-translate-y-0.5 hover:bg-amber-50">
-                        Mulai belanja
-                        <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
-                    </a>
-                </div>
-
-                <div class="grid grid-cols-2 gap-3 sm:gap-4">
-                    @foreach ($newestProducts->take(2) as $product)
-                        <div class="overflow-hidden rounded-3xl border border-white/15 bg-white/10 p-2 backdrop-blur">
-                            <div class="aspect-square overflow-hidden rounded-2xl">
-                                <x-store.product-image :product="$product" />
-                            </div>
-                            <p class="truncate px-1 pt-2 text-xs font-bold text-white">{{ $product->name }}</p>
-                            <p class="px-1 pb-1 text-xs font-extrabold text-amber-200">{{ $product->price_formatted }}</p>
-                        </div>
-                    @endforeach
-                    @for ($i = $newestProducts->take(2)->count(); $i < 2; $i++)
-                        <div class="grid aspect-square place-items-center rounded-3xl border border-dashed border-white/20 bg-white/5"></div>
-                    @endfor
-                </div>
-            </div>
-        </div>
-    </section>
-
     <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
             <div>
@@ -227,42 +201,47 @@
                 <span class="grid h-12 w-12 place-items-center rounded-2xl bg-amber-50 text-amber-600">
                     <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182m0-4.991v4.99" /></svg>
                 </span>
-                <h3 class="mt-4 font-display text-xl font-bold text-stone-900">Mudah tukar ukuran</h3>
-                <p class="mt-2 text-sm leading-7 text-stone-500">Salah ukuran? Bisa tukar dalam 3 hari setelah paket diterima.</p>
+                <h3 class="mt-4 font-display text-xl font-bold text-stone-900">Admin responsif</h3>
+                <p class="mt-2 text-sm leading-7 text-stone-500">Hubungi admin jika ada kendala dalam pembelian atau ingin mengajukan retur produk.</p>
             </div>
         </div>
     </section>
 
     <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div class="text-center">
+        <div class="flex flex-col items-center text-center">
             <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-amber-400">Kata orang tua</p>
             <h2 class="mt-2 font-display text-3xl font-extrabold text-stone-900 sm:text-4xl">Mereka sudah mencoba</h2>
+            <a href="{{ config('shop.google_maps.url') }}" target="_blank" rel="noopener noreferrer"
+               class="mt-3 inline-flex items-center gap-2 rounded-full border border-yellow-200 bg-white px-4 py-2 text-xs font-extrabold text-stone-600 shadow-sm transition hover:border-amber-300 hover:text-amber-600">
+                <x-star-display :rating="config('shop.google_maps.rating')" size="h-4 w-4" />
+                <span>{{ number_format((float) config('shop.google_maps.rating'), 1, ',', '.') }} &middot; {{ config('shop.google_maps.review_count') }} ulasan Google Maps</span>
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+            </a>
         </div>
 
         <div class="mt-8 grid gap-4 md:grid-cols-3 sm:gap-5">
-            @foreach ([
-                ['name' => 'Rina Kusuma', 'city' => 'Bandung', 'text' => 'Bahan kaosnya benar-benar lembut dan tidak gerah. Anak saya langsung mau pakai setiap hari. Packing rapi dan bonus stiker lucu!', 'color' => 'bg-amber-100 text-yellow-700'],
-                ['name' => 'Budi Santoso', 'city' => 'Jakarta', 'text' => 'Pesan dress untuk ulang tahun anak, ukurannya sesuai panduan. Adminnya cepat balas WhatsApp dan membantu pilih ukuran.', 'color' => 'bg-amber-100 text-yellow-700'],
-                ['name' => 'Sari Ayu', 'city' => 'Malang', 'text' => 'Sudah tiga kali belanja di sini. Kualitas konsisten, harga masuk akal, dan pengiriman selalu lebih cepat dari perkiraan.', 'color' => 'bg-teal-100 text-teal-600'],
-            ] as $testimonial)
-                <figure class="rounded-3xl border border-yellow-100 bg-white p-6 shadow-sm">
-                    <div class="flex items-center gap-0.5 text-amber-400">
-                        @for ($i = 0; $i < 5; $i++)
-                            <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 0 0 .95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 0 0-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.539 1.118l-3.976-2.888a1 1 0 0 0-1.176 0l-3.976 2.888c-.783.57-1.838-.196-1.538-1.118l1.518-4.674a1 1 0 0 0-.363-1.118L2.98 10.1c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 0 0 .951-.69l1.519-4.674Z"/></svg>
-                        @endfor
+            @forelse ($reviews as $review)
+                <figure class="flex flex-col rounded-3xl border border-yellow-100 bg-white p-6 shadow-sm">
+                    <div class="flex items-center justify-between gap-2">
+                        <x-star-display :rating="$review->rating" />
+                        <span class="rounded-full bg-stone-100 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-stone-500">{{ $review->sourceLabel() }}</span>
                     </div>
-                    <blockquote class="mt-4 text-sm leading-7 text-stone-600">&ldquo;{{ $testimonial['text'] }}&rdquo;</blockquote>
+                    <blockquote class="mt-4 flex-1 text-sm leading-7 text-stone-600">&ldquo;{{ $review->comment ?: 'Pelanggan puas dengan produk kami.' }}&rdquo;</blockquote>
                     <figcaption class="mt-5 flex items-center gap-3">
-                        <span class="grid h-10 w-10 place-items-center rounded-full text-xs font-extrabold {{ $testimonial['color'] }}">
-                            {{ strtoupper(substr($testimonial['name'], 0, 1)) }}
+                        <span class="grid h-10 w-10 flex-none place-items-center rounded-full bg-amber-100 text-xs font-extrabold text-yellow-700">
+                            {{ strtoupper(substr($review->reviewer_name, 0, 1)) }}
                         </span>
-                        <div>
-                            <p class="text-sm font-extrabold text-stone-900">{{ $testimonial['name'] }}</p>
-                            <p class="text-xs font-semibold text-stone-400">{{ $testimonial['city'] }}</p>
+                        <div class="min-w-0">
+                            <p class="truncate text-sm font-extrabold text-stone-900">{{ $review->reviewer_name }}</p>
+                            <p class="text-xs font-semibold text-stone-400">
+                                {{ $review->reviewer_city ?: 'Pelanggan' }}@if ($review->reviewed_at) &middot; {{ $review->reviewed_at->translatedFormat('M Y') }}@endif
+                            </p>
                         </div>
                     </figcaption>
                 </figure>
-            @endforeach
+            @empty
+                <p class="col-span-full rounded-3xl border border-dashed border-yellow-200 bg-white p-8 text-center text-sm font-semibold text-stone-400">Belum ada ulasan. Jadilah yang pertama setelah berbelanja!</p>
+            @endforelse
         </div>
     </section>
 

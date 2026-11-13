@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 900 480" role="img" aria-labelledby="title">
+  <title id="title">Contoh memilih produk dan ukuran</title>
+  <rect width="900" height="480" rx="28" fill="#fffaf0"/><rect x="28" y="28" width="844" height="424" rx="20" fill="#fff" stroke="#f3e8cf" stroke-width="3"/>
+  <rect x="28" y="28" width="844" height="56" rx="20" fill="#292524"/><circle cx="58" cy="56" r="8" fill="#f87171"/><circle cx="84" cy="56" r="8" fill="#fbbf24"/><circle cx="110" cy="56" r="8" fill="#34d399"/><rect x="150" y="44" width="360" height="24" rx="12" fill="#57534e"/>
+  <rect x="60" y="116" width="330" height="300" rx="18" fill="#fef3c7"/><path d="M190 155h70l25 48-28 18v145h-65V221l-28-18z" fill="#fbbf24"/><circle cx="225" cy="260" r="40" fill="#fde68a" opacity=".8"/>
+  <rect x="430" y="130" width="330" height="22" rx="11" fill="#292524"/><rect x="430" y="168" width="170" height="16" rx="8" fill="#f59e0b"/><rect x="430" y="204" width="280" height="12" rx="6" fill="#d6d3d1"/><rect x="430" y="226" width="250" height="12" rx="6" fill="#d6d3d1"/>
+  <text x="430" y="278" font-family="Arial,sans-serif" font-size="17" font-weight="700" fill="#57534e">Pilih ukuran</text><rect x="430" y="294" width="58" height="38" rx="10" fill="#fff" stroke="#e7e5e4" stroke-width="2"/><text x="451" y="319" font-family="Arial" font-size="14" fill="#57534e">1T</text><rect x="500" y="294" width="58" height="38" rx="10" fill="#f59e0b"/><text x="521" y="319" font-family="Arial" font-size="14" font-weight="700" fill="#fff">2T</text><rect x="570" y="294" width="58" height="38" rx="10" fill="#fff" stroke="#e7e5e4" stroke-width="2"/><text x="591" y="319" font-family="Arial" font-size="14" fill="#57534e">3T</text>
+  <rect x="430" y="354" width="220" height="44" rx="22" fill="#f59e0b"/><text x="464" y="382" font-family="Arial" font-size="15" font-weight="700" fill="#fff">Tambah ke keranjang</text>
+</svg>

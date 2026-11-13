@@ -2,6 +2,8 @@
 
 namespace App\Http\Requests\Auth;
 
+use App\Models\User;
+use Illuminate\Auth\Events\Failed;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -33,14 +35,20 @@ class LoginRequest extends FormRequest
         ];
     }
 
-    /**
-     * Attempt to authenticate the request's credentials.
-     *
-     * @throws ValidationException
-     */
-    public function authenticate(): void
+    public function authenticateForRoles(string ...$roles): void
     {
         $this->ensureIsNotRateLimited();
+
+        $user = User::query()->where('email', $this->string('email')->toString())->first();
+
+        if (! $user || ! $user->hasRole(...$roles)) {
+            RateLimiter::hit($this->throttleKey());
+            event(new Failed('web', $user, ['email' => $this->string('email')->toString()]));
+
+            throw ValidationException::withMessages([
+                'email' => trans('auth.failed'),
+            ]);
+        }
 
         if (! Auth::attempt($this->only('email', 'password'), $this->boolean('remember'))) {
             RateLimiter::hit($this->throttleKey());

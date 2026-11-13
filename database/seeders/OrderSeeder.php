@@ -98,10 +98,12 @@ class OrderSeeder extends Seeder
                 return [
                     'product_id' => $product->id,
                     'product_name' => $product->name,
+                    'category_name' => $product->category?->name,
                     'size' => $item['size'],
                     'price' => $product->price,
                     'quantity' => $item['quantity'],
                     'subtotal' => $product->price * $item['quantity'],
+                    'cost_price' => $product->cost_price,
                 ];
             });
 

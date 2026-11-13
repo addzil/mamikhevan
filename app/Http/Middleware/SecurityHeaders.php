@@ -18,6 +18,11 @@ class SecurityHeaders
         $response->headers->set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
         $response->headers->set('X-XSS-Protection', '0');
 
+        if ($request->routeIs('orders.show')) {
+            $response->headers->set('Referrer-Policy', 'no-referrer');
+            $response->headers->set('Cache-Control', 'private, no-store');
+        }
+
         if (app()->isProduction()) {
             $response->headers->set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
         }

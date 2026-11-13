@@ -26,6 +26,15 @@ class ProfileUpdateRequest extends FormRequest
                 'max:255',
                 Rule::unique(User::class)->ignore($this->user()->id),
             ],
+            'notification_email' => $this->user()->isAdmin()
+                ? ['sometimes', 'nullable', 'string', 'lowercase', 'email', 'max:255']
+                : ['prohibited'],
+            'current_password' => Rule::when(
+                $this->input('email') !== $this->user()->email
+                    || ($this->user()->isAdmin() && $this->has('notification_email')
+                        && $this->input('notification_email') !== $this->user()->notification_email),
+                ['required', 'current_password'],
+            ),
         ];
     }
 }

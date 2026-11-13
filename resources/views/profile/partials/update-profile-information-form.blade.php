@@ -47,6 +47,21 @@
             @endif
         </div>
 
+        @if ($user->isAdmin())
+            <div>
+                <x-input-label for="notification_email" value="Email notifikasi pesanan" />
+                <x-text-input id="notification_email" name="notification_email" type="email" class="mt-1 block w-full" :value="old('notification_email', $user->notification_email)" autocomplete="email" placeholder="notifikasi@contoh.com" />
+                <p class="mt-2 text-sm text-gray-600">Alamat ini menerima pemberitahuan pesanan baru dan tujuan pembayarannya. Kosongkan bila tidak ingin menerima notifikasi.</p>
+                <x-input-error class="mt-2" :messages="$errors->get('notification_email')" />
+            </div>
+        @endif
+
+        <div>
+            <x-input-label for="current_password" value="Kata sandi saat ini (wajib jika mengubah email{{ $user->isAdmin() ? ' atau email notifikasi' : '' }})" />
+            <x-text-input id="current_password" name="current_password" type="password" class="mt-1 block w-full" autocomplete="current-password" />
+            <x-input-error class="mt-2" :messages="$errors->get('current_password')" />
+        </div>
+
         <div class="flex items-center gap-4">
             <x-primary-button>{{ __('Save') }}</x-primary-button>
 

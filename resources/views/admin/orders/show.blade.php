@@ -11,6 +11,11 @@
             Kembali ke daftar pesanan
         </a>
         <div class="flex flex-wrap gap-2">
+            <a href="{{ route('admin.orders.shipping-label', $order) }}" target="_blank" rel="noopener"
+               class="inline-flex items-center gap-2 rounded-xl bg-stone-900 px-3 py-2 text-[11px] font-extrabold text-white transition hover:bg-stone-700">
+                <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6.72 13.829c-.24.03-.48.062-.72.096m.72-.096a42.415 42.415 0 0 1 10.56 0m-10.56 0L6.34 18m10.94-4.171c.24.03.48.062.72.096m-.72-.096L17.66 18m0 0 .229 2.523a1.125 1.125 0 0 1-1.12 1.227H7.231c-.662 0-1.18-.568-1.12-1.227L6.34 18m11.318 0h1.091A2.25 2.25 0 0 0 21 15.75V9.456c0-1.081-.768-2.015-1.837-2.175a48.055 48.055 0 0 0-1.913-.247M6.34 18H5.25A2.25 2.25 0 0 1 3 15.75V9.456c0-1.081.768-2.015 1.837-2.175a48.041 48.041 0 0 1 1.913-.247m10.5 0a48.536 48.536 0 0 0-10.5 0m10.5 0V3.375c0-.621-.504-1.125-1.125-1.125h-8.25c-.621 0-1.125.504-1.125 1.125v3.659M18 10.5h.008v.008H18V10.5Zm-3 0h.008v.008H15V10.5Z" /></svg>
+                Cetak resi
+            </a>
             <a href="{{ route('orders.show', $order) }}" target="_blank" rel="noopener"
                class="inline-flex items-center gap-2 rounded-xl border border-stone-200 bg-white px-3 py-2 text-[11px] font-extrabold text-stone-600 transition hover:border-amber-200 hover:text-yellow-700">
                 <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 6H5.25A2.25 2.25 0 0 0 3 8.25v10.5A2.25 2.25 0 0 0 5.25 21h10.5A2.25 2.25 0 0 0 18 18.75V10.5m-10.5 6L21 3m0 0h-5.25M21 3v5.25" /></svg>
@@ -28,6 +33,9 @@
     <div class="mt-5 flex flex-wrap items-center gap-3 rounded-2xl border border-stone-200 bg-white px-5 py-4 shadow-sm">
         <span class="text-sm font-extrabold text-stone-900">{{ $order->code }}</span>
         <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-extrabold ring-1 {{ $order->statusColor() }}">{{ $order->statusLabel() }}</span>
+        @if ($order->shipping_courier)
+            <span class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[10px] font-extrabold {{ $order->courierBadgeClasses() }}">{{ $order->courierLabel() }}</span>
+        @endif
         <span class="text-xs font-semibold text-stone-400">{{ $order->items->sum('quantity') }} item &middot; {{ $order->paymentLabel() }}</span>
         <span class="ml-auto font-display text-xl font-extrabold text-yellow-700">{{ $order->total_formatted }}</span>
     </div>
@@ -62,7 +70,7 @@
                                                 @endif
                                             </div>
                                             <div>
-                                                <p class="text-xs font-extrabold text-stone-800">{{ $item->product_name }}</p>
+                                                <p class="text-xs font-extrabold text-stone-800">{{ $item->product_name }} @if ($item->is_promo_gift) <span class="text-emerald-700">(Hadiah promo)</span> @endif</p>
                                                 @if (! $item->product)
                                                     <p class="text-[10px] font-bold text-stone-400">Produk sudah dihapus</p>
                                                 @endif
@@ -70,9 +78,9 @@
                                         </div>
                                     </td>
                                     <td class="px-5 py-3.5 text-xs font-bold text-stone-500">{{ $item->size ?: '—' }}</td>
-                                    <td class="whitespace-nowrap px-5 py-3.5 text-xs font-bold text-stone-500">{{ $item->price_formatted }}</td>
+                                    <td class="whitespace-nowrap px-5 py-3.5 text-xs font-bold text-stone-500">{{ $item->is_promo_gift ? 'Gratis' : $item->price_formatted }}</td>
                                     <td class="px-5 py-3.5 text-xs font-extrabold text-stone-700">{{ $item->quantity }}</td>
-                                    <td class="whitespace-nowrap px-5 py-3.5 text-right text-xs font-extrabold text-stone-800">{{ $item->subtotal_formatted }}</td>
+                                    <td class="whitespace-nowrap px-5 py-3.5 text-right text-xs font-extrabold text-stone-800">{{ $item->is_promo_gift ? 'Gratis' : $item->subtotal_formatted }}</td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -88,6 +96,24 @@
                             <dt class="font-semibold text-stone-500">Ongkos kirim</dt>
                             <dd class="font-extrabold text-stone-800">{{ $order->shipping_formatted }}</dd>
                         </div>
+                        @if ($order->promotion_name)
+                            <p class="text-xs font-extrabold text-amber-700">Promo: {{ $order->promotion_name }}</p>
+                        @endif
+                        @if ($order->voucher_code)
+                            <div class="flex justify-between gap-4"><dt>Kode voucher</dt><dd class="font-mono font-bold text-stone-700">{{ $order->voucher_code }}</dd></div>
+                        @endif
+                        @if ($order->promotion_discount > 0)
+                            <div class="flex justify-between gap-4"><dt>Diskon produk</dt><dd>-Rp{{ number_format($order->promotion_discount, 0, ',', '.') }}</dd></div>
+                        @endif
+                        @if ($order->shipping_discount > 0)
+                            <div class="flex justify-between gap-4"><dt>Diskon ongkir</dt><dd>-Rp{{ number_format($order->shipping_discount, 0, ',', '.') }}</dd></div>
+                        @endif
+                        @if ($order->payment_unique_code)
+                            <div class="flex justify-between gap-4">
+                                <dt class="font-semibold text-stone-500">Kode unik transfer</dt>
+                                <dd class="font-extrabold text-stone-800">Rp{{ number_format($order->payment_unique_code, 0, ',', '.') }}</dd>
+                            </div>
+                        @endif
                         <div class="flex justify-between gap-4 border-t border-stone-200 pt-2">
                             <dt class="font-extrabold text-stone-900">Total</dt>
                             <dd class="font-display text-lg font-extrabold text-yellow-700">{{ $order->total_formatted }}</dd>
@@ -117,7 +143,11 @@
 
                 <div class="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
                     <h2 class="font-display text-lg font-bold text-stone-900">Alamat &amp; catatan</h2>
+                    <p class="mt-3 text-xs font-extrabold text-amber-700">{{ $order->shippingLabel() }}</p>
                     <p class="mt-4 text-xs font-semibold leading-6 text-stone-600">{!! nl2br(e($order->customer_address)) !!}</p>
+                    @if ($order->shipping_postal_code)
+                        <p class="mt-2 text-xs font-semibold leading-6 text-stone-600">{{ $order->shipping_subdistrict }}, {{ $order->shipping_district }}, {{ $order->shipping_city }}, {{ $order->shipping_province }} {{ $order->shipping_postal_code }}</p>
+                    @endif
                     @if ($order->note)
                         <div class="mt-3 rounded-xl bg-amber-50 px-3 py-2">
                             <p class="text-[10px] font-extrabold uppercase tracking-wider text-yellow-700">Catatan</p>
@@ -126,22 +156,69 @@
                     @endif
                 </div>
             </div>
+
+            <div class="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
+                <div class="flex items-start justify-between gap-3">
+                    <div>
+                        <h2 class="font-display text-lg font-bold text-stone-900">Pengiriman &amp; resi</h2>
+                        <p class="mt-1 text-xs font-extrabold text-stone-700">{{ $order->shippingLabel() }}</p>
+                    </div>
+                    <span class="inline-flex flex-none rounded-full px-2.5 py-1 text-[10px] font-extrabold {{ $order->courierBadgeClasses() }}">{{ $order->courierLabel() }}</span>
+                </div>
+                <p class="mt-2 text-[11px] font-semibold leading-5 text-stone-400">{{ $order->courierHandlingNote() }}</p>
+
+                <dl class="mt-4 grid gap-3 text-xs sm:grid-cols-2">
+                    <div>
+                        <dt class="font-semibold text-stone-500">Nomor resi</dt>
+                        <dd class="mt-1 font-mono font-extrabold text-stone-800">{{ $order->shipping_tracking_number ?: 'Belum diisi' }}</dd>
+                    </div>
+                    <div>
+                        <dt class="font-semibold text-stone-500">Berat estimasi</dt>
+                        <dd class="mt-1 font-extrabold text-stone-800">{{ number_format($order->estimatedWeightGrams() / 1000, 2, ',', '.') }} kg</dd>
+                    </div>
+                </dl>
+
+                <a href="{{ route('admin.orders.shipping-label', $order) }}" target="_blank" rel="noopener"
+                   class="mt-4 inline-flex w-full items-center justify-center gap-2 rounded-xl border border-stone-200 px-4 py-2.5 text-xs font-extrabold text-stone-700 transition hover:border-amber-200 hover:text-yellow-700">
+                    Cetak resi pengiriman
+                </a>
+            </div>
         </div>
 
         <aside class="space-y-6">
             <div class="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
                 <h2 class="font-display text-lg font-bold text-stone-900">Perbarui status</h2>
                 <p class="mt-1 text-xs font-semibold leading-5 text-stone-400">
-                    Status akan langsung terlihat di halaman pelacakan pelanggan.
+                    Status akan langsung terlihat di halaman pelacakan pelanggan. Email nominal dikirim saat checkout. Email resi dikirim saat Dikirim.
                 </p>
+
+                @if (in_array($order->status, [\App\Models\Order::STATUS_PROCESSING, \App\Models\Order::STATUS_SHIPPED], true))
+                    <form action="{{ route('admin.orders.tracking', $order) }}" method="POST" class="mt-4 space-y-3 rounded-2xl border border-violet-100 bg-violet-50/60 p-4">
+                        @csrf
+                        @method('PATCH')
+                        <label for="tracking_number" class="block text-xs font-extrabold text-stone-700">Nomor resi pengiriman</label>
+                        <input id="tracking_number" type="text" name="tracking_number" value="{{ old('tracking_number', $order->shipping_tracking_number) }}" maxlength="100" required placeholder="Masukkan nomor resi dari kurir"
+                               class="w-full rounded-xl border-violet-200 text-sm focus:border-violet-300 focus:ring-violet-200">
+                        @error('tracking_number') <p class="text-xs font-bold text-red-600">{{ $message }}</p> @enderror
+                        <button type="submit" class="w-full rounded-xl bg-violet-700 px-4 py-2.5 text-xs font-extrabold text-white transition hover:bg-violet-800">
+                            {{ $order->shipping_tracking_number ? 'Perbarui nomor resi' : 'Simpan nomor resi' }}
+                        </button>
+                        @if ($order->shipping_tracking_number)
+                            <p class="text-xs font-semibold text-violet-800">Resi tersimpan: {{ $order->shipping_tracking_number }}</p>
+                        @else
+                            <p class="text-xs leading-5 text-stone-500">Simpan nomor resi terlebih dahulu agar status Dikirim dapat dipilih.</p>
+                        @endif
+                    </form>
+                @endif
 
                 <form action="{{ route('admin.orders.status', $order) }}" method="POST" class="mt-4">
                     @csrf
                     @method('PATCH')
                     <label for="status" class="sr-only">Status pesanan</label>
                     <select id="status" name="status" class="w-full rounded-xl border-stone-200 py-2.5 text-sm font-bold focus:border-amber-300 focus:ring-amber-200">
-                        @foreach (\App\Models\Order::STATUS_LABELS as $value => $label)
-                            <option value="{{ $value }}" @selected($order->status === $value)>{{ $label }}</option>
+                        @foreach (array_merge([$order->status], $order->adminNextStatuses()) as $value)
+                            @php($label = \App\Models\Order::STATUS_LABELS[$value] ?? ucfirst($value))
+                            <option value="{{ $value }}" @selected($order->status === $value) @disabled($value === \App\Models\Order::STATUS_SHIPPED && blank($order->shipping_tracking_number) && $order->status !== \App\Models\Order::STATUS_SHIPPED)>{{ $label }}{{ $value === \App\Models\Order::STATUS_SHIPPED && blank($order->shipping_tracking_number) ? ' — isi resi dulu' : '' }}</option>
                         @endforeach
                     </select>
                     @error('status') <p class="mt-1.5 text-xs font-bold text-yellow-700">{{ $message }}</p> @enderror
@@ -159,9 +236,23 @@
             <div class="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
                 <h2 class="font-display text-lg font-bold text-stone-900">Pembayaran</h2>
                 <p class="mt-3 text-xs font-extrabold text-stone-800">{{ $order->paymentLabel() }}</p>
+                @if (($order->payment_destination['type'] ?? null) === 'bank')
+                    <p class="mt-2 text-xs font-semibold text-stone-700">Tujuan: {{ $order->payment_destination['bank'] }} {{ $order->payment_destination['account_number'] }} a.n. {{ $order->payment_destination['account_name'] }}</p>
+                @elseif (($order->payment_destination['type'] ?? null) === 'qris')
+                    <p class="mt-2 text-xs font-semibold text-stone-700">Tujuan: QRIS</p>
+                @endif
                 <p class="mt-1 text-xs font-semibold leading-5 text-stone-400">
                     {{ $order->payment_method === 'cod' ? 'Ditagih tunai oleh kurir saat pengiriman.' : 'Pastikan pembayaran sudah masuk sebelum status diubah menjadi Diproses.' }}
                 </p>
+                @if ($order->payment_proof_path)
+                    <div class="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
+                        <p class="text-xs font-extrabold text-emerald-800">Bukti pembayaran pelanggan</p>
+                        <p class="mt-1 text-[11px] font-semibold text-emerald-700">Dikirim {{ $order->payment_proof_uploaded_at?->translatedFormat('d F Y, H:i') }} WIB. Periksa kecocokan nominal dan rekening sebelum mengonfirmasi pembayaran.</p>
+                        <a href="{{ route('admin.orders.payment-proof', $order) }}" target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex w-full justify-center rounded-xl bg-emerald-700 px-4 py-2.5 text-xs font-extrabold text-white transition hover:bg-emerald-800">Lihat bukti pembayaran</a>
+                    </div>
+                @elseif ($order->payment_method === 'transfer' && $order->status === \App\Models\Order::STATUS_PENDING)
+                    <p class="mt-4 rounded-xl bg-amber-50 p-3 text-xs font-semibold leading-5 text-amber-800">Pelanggan belum mengirim bukti pembayaran. Konfirmasi pembayaran setelah dana diterima.</p>
+                @endif
             </div>
 
             <div class="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">

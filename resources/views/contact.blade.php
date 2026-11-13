@@ -32,8 +32,18 @@
                         </span>
                         <div>
                             <h2 class="font-display text-base font-bold text-stone-900">Alamat toko</h2>
-                            <p class="mt-1 text-sm leading-6 text-stone-500">Jl. Ceria Anak No. 17, Sukajadi, Bandung, Jawa Barat 40162</p>
+                            <p class="mt-1 text-sm leading-6 text-stone-500">Jl. Lapangan Kobra 1 No.118, Tambun Selatan, Kab. Bekasi</p>
+                            <a href="https://www.google.com/maps/search/?api=1&query=mamikhevanshop%20Tambun%20Selatan" target="_blank" rel="noopener noreferrer" class="mt-1 inline-flex text-xs font-extrabold text-amber-600 hover:underline">Buka di Google Maps</a>
                         </div>
+                    </div>
+                    <div class="mt-4 overflow-hidden rounded-2xl border border-yellow-100">
+                        <iframe
+                            src="https://www.google.com/maps?q=mamikhevanshop%20Tambun%20Selatan&output=embed"
+                            title="Lokasi Mamikhevanshop di Google Maps"
+                            class="h-56 w-full"
+                            loading="lazy"
+                            referrerpolicy="no-referrer-when-downgrade"
+                            allowfullscreen></iframe>
                     </div>
                 </div>
 
@@ -44,8 +54,8 @@
                         </span>
                         <div>
                             <h2 class="font-display text-base font-bold text-stone-900">WhatsApp</h2>
-                            <p class="mt-1 text-sm leading-6 text-stone-500">0812-3456-7890</p>
-                            <a href="https://wa.me/6281234567890" target="_blank" rel="noopener noreferrer" class="mt-1 inline-flex text-xs font-extrabold text-emerald-600 hover:underline">Chat sekarang</a>
+                            <p class="mt-1 text-sm leading-6 text-stone-500">085782194580</p>
+                            <a href="https://wa.me/6285782194580" target="_blank" rel="noopener noreferrer" class="mt-1 inline-flex text-xs font-extrabold text-emerald-600 hover:underline">Chat sekarang</a>
                         </div>
                     </div>
                 </div>
@@ -57,7 +67,7 @@
                         </span>
                         <div>
                             <h2 class="font-display text-base font-bold text-stone-900">Email</h2>
-                            <p class="mt-1 text-sm leading-6 text-stone-500">halo@mamikhevanshop.id</p>
+                            <p class="mt-1 text-sm leading-6 text-stone-500">adlipurna@gmail.com</p>
                             <p class="text-xs font-semibold text-stone-400">Untuk pertanyaan &amp; kerja sama</p>
                         </div>
                     </div>

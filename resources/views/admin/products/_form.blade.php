@@ -14,6 +14,15 @@
             ->values()
             ->all();
     }
+    $initialSizeStocks = collect($selectedSizes)
+        ->mapWithKeys(fn (string $size): array => [$size => (int) ($product?->size_stocks[$size] ?? 0)])
+        ->all();
+    $oldSizeStocks = old('size_stocks');
+    if (is_array($oldSizeStocks)) {
+        foreach ($selectedSizes as $index => $size) {
+            $initialSizeStocks[$size] = (int) ($oldSizeStocks[$index] ?? 0);
+        }
+    }
 @endphp
 
 @if ($errors->any())
@@ -27,7 +36,8 @@
     </div>
 @endif
 
-<div class="grid gap-5 sm:grid-cols-2">
+<div class="grid gap-5 sm:grid-cols-2"
+     x-data="sizeGuideSelector({{ json_encode($sizeGuideTypes->map(fn($t) => ['id' => $t->id, 'name' => $t->name, 'entries' => $t->entries->map(fn($e) => ['label' => $e->label])->values()->all()])->values()->all()) }}, {{ (int) ($selectedSizeGuideTypeId ?? 0) }}, {{ json_encode($selectedSizes ?? []) }}, {{ json_encode($initialSizeStocks) }})">
     <div class="sm:col-span-2">
         <label for="name"
                class="text-xs font-extrabold uppercase tracking-wider text-stone-500">Nama produk
@@ -111,21 +121,74 @@
         @enderror
     </div>
 
-    <div>
+    <div class="sm:col-span-2">
         <label for="stock"
                class="text-xs font-extrabold uppercase tracking-wider text-stone-500">Stok <span
                   class="text-yellow-700">*</span></label>
-        <input id="stock" type="number" name="stock"
-               value="{{ old('stock', $product->stock ?? 0) }}" required min="0"
-               max="99999"
+        @if ($product)
+            <input id="stock" type="number" value="{{ $product->stock }}" disabled
+                   class="mt-2 w-full rounded-xl border-stone-200 bg-stone-100 py-2.5 text-sm text-stone-500">
+            @if ($product->sizeList() !== [])
+                <div class="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+                    @foreach ($product->sizeStockMap() as $size => $quantity)
+                        <div class="rounded-xl border border-stone-200 bg-stone-50 px-3 py-2 text-xs">
+                            <span class="font-bold text-stone-500">Ukuran {{ $size }}</span>
+                            <span class="float-right font-extrabold text-stone-800">{{ number_format($quantity) }} unit</span>
+                        </div>
+                    @endforeach
+                </div>
+                @if ($product->unallocated_stock > 0)
+                    <p class="mt-2 rounded-xl bg-amber-50 px-3 py-2 text-xs font-bold leading-5 text-amber-800">{{ number_format($product->unallocated_stock) }} unit stok lama belum dialokasikan ke ukuran. Selesaikan opname ukuran sebelum produk dapat dibeli.</p>
+                @endif
+            @endif
+            <p class="mt-2 text-[11px] font-semibold text-stone-400">Sesuaikan jumlah per ukuran melalui <a href="{{ route('admin.stock-opname.index') }}" class="font-extrabold text-amber-700 hover:underline">menu Opname Stok</a>.</p>
+        @else
+            <div x-show="selectedSizes.length === 0">
+                <input id="stock" type="number" name="stock"
+                       value="{{ old('stock', 0) }}" min="0" max="99999"
+                       :required="selectedSizes.length === 0"
+                       class="mt-2 w-full rounded-xl border-stone-200 py-2.5 text-sm focus:border-amber-300 focus:ring-amber-200">
+                <p class="mt-1.5 text-[11px] font-semibold text-stone-400">Produk tanpa pilihan ukuran menggunakan satu stok total.</p>
+                @error('stock')
+                    <p class="mt-1.5 text-xs font-bold text-yellow-700">{{ $message }}</p>
+                @enderror
+            </div>
+            <div x-show="selectedSizes.length > 0" x-cloak class="mt-3">
+                <p class="text-[11px] font-semibold text-stone-400">Masukkan stok awal satu per satu untuk ukuran yang dipilih. Total stok akan dihitung otomatis.</p>
+                <div class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+                    <template x-for="(size, index) in selectedSizes" :key="size">
+                        <label class="rounded-xl border border-stone-200 p-3">
+                            <span class="text-xs font-extrabold text-stone-600" x-text="'Ukuran ' + size"></span>
+                            <input type="number" min="0" max="99999" required
+                                   :name="'size_stocks[' + index + ']'"
+                                   :value="sizeStocks[size] ?? 0"
+                                   @input="sizeStocks[size] = Number($event.target.value)"
+                                   class="mt-2 w-full rounded-lg border-stone-200 py-2 text-sm focus:border-amber-300 focus:ring-amber-200">
+                        </label>
+                    </template>
+                </div>
+                @error('size_stocks')
+                    <p class="mt-1.5 text-xs font-bold text-yellow-700">{{ $message }}</p>
+                @enderror
+                @error('size_stocks.*')
+                    <p class="mt-1.5 text-xs font-bold text-yellow-700">{{ $message }}</p>
+                @enderror
+            </div>
+        @endif
+    </div>
+
+    <div>
+        <label for="weight_grams" class="text-xs font-extrabold uppercase tracking-wider text-stone-500">Berat per item (gram)</label>
+        <input id="weight_grams" type="number" name="weight_grams"
+               value="{{ old('weight_grams', $product->weight_grams ?? '') }}" min="1" max="30000"
                class="mt-2 w-full rounded-xl border-stone-200 py-2.5 text-sm focus:border-amber-300 focus:ring-amber-200">
-        @error('stock')
+        <p class="mt-1.5 text-[11px] font-semibold text-stone-400">Isi berat produk bersama kemasan untuk perhitungan ongkir.</p>
+        @error('weight_grams')
             <p class="mt-1.5 text-xs font-bold text-yellow-700">{{ $message }}</p>
         @enderror
     </div>
 
     <div
-         x-data="sizeGuideSelector({{ json_encode($sizeGuideTypes->map(fn($t) => ['id' => $t->id, 'name' => $t->name, 'entries' => $t->entries->map(fn($e) => ['label' => $e->label])->values()->all()])->values()->all()) }}, {{ (int) ($selectedSizeGuideTypeId ?? 0) }}, {{ json_encode($selectedSizes ?? []) }})"
          class="grid gap-5 sm:col-span-2 sm:grid-cols-2">
 
         <div>
@@ -369,6 +432,28 @@
             </span>
         </label>
     </div>
+
+    <div>
+        <input type="hidden" name="cod_available" value="0">
+        <label class="flex h-full cursor-pointer items-start gap-3 rounded-2xl border border-stone-200 p-4">
+            <input type="checkbox" name="cod_available" value="1" @checked((bool) old('cod_available', $product->cod_available ?? true)) class="mt-0.5 rounded border-stone-300 text-yellow-700 focus:ring-amber-200">
+            <span>
+                <span class="block text-sm font-extrabold text-stone-800">Tersedia untuk COD</span>
+                <span class="mt-0.5 block text-xs font-semibold text-stone-400">Jika tidak dicentang, pelanggan harus memilih transfer saat produk ini ada di keranjang.</span>
+            </span>
+        </label>
+    </div>
+
+    <div>
+        <input type="hidden" name="free_shipping" value="0">
+        <label class="flex h-full cursor-pointer items-start gap-3 rounded-2xl border border-stone-200 p-4">
+            <input type="checkbox" name="free_shipping" value="1" @checked((bool) old('free_shipping', $product->free_shipping ?? false)) class="mt-0.5 rounded border-stone-300 text-yellow-700 focus:ring-amber-200">
+            <span>
+                <span class="block text-sm font-extrabold text-stone-800">Bebas ongkir untuk produk ini</span>
+                <span class="mt-0.5 block text-xs font-semibold text-stone-400">Jika keranjang berisi produk lain yang tidak bebas ongkir, ongkir tetap dihitung dari produk tersebut.</span>
+            </span>
+        </label>
+    </div>
 </div>
 
 <div
@@ -389,11 +474,12 @@
 
 @push('scripts')
     <script>
-        function sizeGuideSelector(allTypes, initialTypeId, initialSizes) {
+        function sizeGuideSelector(allTypes, initialTypeId, initialSizes, initialStocks) {
             return {
                 allTypes: allTypes,
                 selectedTypeId: initialTypeId || '',
                 selectedSizes: initialSizes || [],
+                sizeStocks: initialStocks || {},
                 get currentEntries() {
                     if (!this.selectedTypeId) return [];
                     const type = this.allTypes.find(t => t.id == this.selectedTypeId);

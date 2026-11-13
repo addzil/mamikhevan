@@ -15,9 +15,11 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             CategorySeeder::class,
             SizeGuideSeeder::class,
+            SetelanSizeGuideSeeder::class,
             ProductSeeder::class,
             OrderSeeder::class,
             ContactMessageSeeder::class,
+            ReviewSeeder::class,
         ]);
     }
 }

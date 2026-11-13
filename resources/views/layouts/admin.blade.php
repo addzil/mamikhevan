@@ -10,6 +10,7 @@
             'active' => 'admin.dashboard',
             'icon' => 'dashboard',
             'badge' => null,
+            'roles' => ['administrator', 'management'],
         ],
         [
             'label' => 'Produk',
@@ -17,6 +18,15 @@
             'active' => 'admin.products.*',
             'icon' => 'products',
             'badge' => null,
+            'roles' => ['administrator', 'management', 'operator'],
+        ],
+        [
+            'label' => 'Opname Stok',
+            'route' => 'admin.stock-opname.index',
+            'active' => 'admin.stock-opname.*',
+            'icon' => 'products',
+            'badge' => null,
+            'roles' => ['administrator', 'management', 'operator'],
         ],
         [
             'label' => 'Kategori',
@@ -24,6 +34,31 @@
             'active' => 'admin.categories.*',
             'icon' => 'categories',
             'badge' => null,
+            'roles' => ['administrator', 'management', 'operator'],
+        ],
+        [
+            'label' => 'Promo',
+            'route' => 'admin.promotions.index',
+            'active' => 'admin.promotions.*',
+            'icon' => 'products',
+            'badge' => null,
+            'roles' => ['administrator', 'management'],
+        ],
+        [
+            'label' => 'Rating',
+            'route' => 'admin.reviews.index',
+            'active' => 'admin.reviews.*',
+            'icon' => 'reviews',
+            'badge' => null,
+            'roles' => ['administrator', 'management', 'operator'],
+        ],
+        [
+            'label' => 'Banner Beranda',
+            'route' => 'admin.home-banner.edit',
+            'active' => 'admin.home-banner.*',
+            'icon' => 'products',
+            'badge' => null,
+            'roles' => ['administrator', 'management', 'operator'],
         ],
         [
             'label' => 'Panduan Ukuran',
@@ -31,6 +66,7 @@
             'active' => 'admin.size-guides.*',
             'icon' => 'size-guide',
             'badge' => null,
+            'roles' => ['administrator', 'management', 'operator'],
         ],
         [
             'label' => 'Pesanan',
@@ -38,6 +74,23 @@
             'active' => 'admin.orders.*',
             'icon' => 'orders',
             'badge' => $pendingOrders ?: null,
+            'roles' => ['administrator', 'management'],
+        ],
+        [
+            'label' => 'Keuangan',
+            'route' => 'admin.finance.index',
+            'active' => 'admin.finance.*',
+            'icon' => 'orders',
+            'badge' => null,
+            'roles' => ['administrator', 'management'],
+        ],
+        [
+            'label' => 'Pembayaran',
+            'route' => 'admin.payment-settings.edit',
+            'active' => 'admin.payment-settings.*',
+            'icon' => 'messages',
+            'badge' => null,
+            'roles' => ['administrator', 'management'],
         ],
         [
             'label' => 'Pesan',
@@ -45,8 +98,26 @@
             'active' => 'admin.messages.*',
             'icon' => 'messages',
             'badge' => $unreadMessages ?: null,
+            'roles' => ['administrator', 'management', 'operator'],
+        ],
+        [
+            'label' => 'Manajemen User',
+            'route' => 'admin.users.index',
+            'active' => 'admin.users.*',
+            'icon' => 'users',
+            'badge' => null,
+            'roles' => ['administrator'],
+        ],
+        [
+            'label' => 'Audit Trail',
+            'route' => 'admin.audit-trail.index',
+            'active' => 'admin.audit-trail.*',
+            'icon' => 'audit',
+            'badge' => null,
+            'roles' => ['administrator'],
         ],
     ];
+    $adminNav = array_values(array_filter($adminNav, fn (array $item): bool => in_array(auth()->user()->role, $item['roles'], true)));
 @endphp
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
@@ -149,6 +220,14 @@
                                 </svg>
                             @break
 
+                            @case('reviews')
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
+                                     stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M11.48 3.499a.562.562 0 0 1 1.04 0l2.125 5.111a.563.563 0 0 0 .475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 0 0-.182.557l1.285 5.385a.562.562 0 0 1-.84.61l-4.725-2.885a.562.562 0 0 0-.586 0L6.982 20.54a.562.562 0 0 1-.84-.61l1.285-5.386a.562.562 0 0 0-.182-.557l-4.204-3.602a.562.562 0 0 1 .321-.988l5.518-.442a.563.563 0 0 0 .475-.345L11.48 3.5Z" />
+                                </svg>
+                            @break
+
                             @case('orders')
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2"
                                      stroke="currentColor">
@@ -162,6 +241,18 @@
                                      stroke="currentColor">
                                     <path stroke-linecap="round" stroke-linejoin="round"
                                           d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                                </svg>
+                            @break
+
+                            @case('users')
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M18 18.72a9.094 9.094 0 0 0 3.75-.728 3.375 3.375 0 0 0-3.75-3.192m-3.75 3.92a9.094 9.094 0 0 1-3.75-.728 3.375 3.375 0 0 1 3.75-3.192m0 3.92v.003M12 12a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm6 0a2.25 2.25 0 1 0 0-4.5A2.25 2.25 0 0 0 18 12Z" />
+                                </svg>
+                            @break
+
+                            @case('audit')
+                                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 3 5 6v5c0 4.2 2.9 8.1 7 9.5 4.1-1.4 7-5.3 7-9.5V6l-7-3Zm-3.5 9 2.2 2.2 4.8-5" />
                                 </svg>
                             @break
                         @endswitch
@@ -273,7 +364,7 @@
                                 <span
                                       class="block max-w-32 truncate text-xs font-extrabold text-stone-800">{{ auth()->user()->name }}</span>
                                 <span
-                                      class="block text-[10px] font-bold uppercase tracking-wider text-amber-400">Administrator</span>
+                                      class="block text-[10px] font-bold uppercase tracking-wider text-amber-400">{{ auth()->user()->roleLabel() }}</span>
                             </span>
                             <svg class="h-4 w-4 text-stone-400" fill="none"
                                  viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">

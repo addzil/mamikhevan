@@ -29,7 +29,7 @@
                     @auth
                         <span class="hidden text-xs font-bold text-stone-500 sm:inline">{{ auth()->user()->name }}</span>
                         <a href="{{ route('dashboard') }}" class="rounded-xl border border-stone-200 bg-white px-3 py-2 text-xs font-extrabold text-stone-600 transition hover:border-amber-200 hover:text-amber-600">
-                            Dashboard
+                            {{ auth()->user()->isAdmin() ? 'Panel Admin' : 'Pesanan Saya' }}
                         </a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf

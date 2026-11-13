@@ -35,6 +35,9 @@
                         @if (! $message->is_read)
                             <span class="rounded-full bg-amber-500 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-white">Baru</span>
                         @endif
+                        @if ($message->replied_at)
+                            <span class="rounded-full bg-sky-50 px-1.5 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-sky-600 ring-1 ring-sky-200">Dibalas</span>
+                        @endif
                         <span class="text-[11px] font-semibold text-stone-400">{{ $message->created_at->diffForHumans() }}</span>
                     </div>
                     <p class="mt-0.5 truncate text-xs font-bold text-stone-600">{{ $message->subject }}</p>

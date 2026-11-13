@@ -9,8 +9,17 @@ deployment:
     - cd "$APP_ROOT" && test -f .env || { echo "Missing production .env in $APP_ROOT" >&2; exit 1; }
     - cd "$APP_ROOT" && grep -Eq '^APP_ENV=production[[:space:]]*$' .env || { echo "Set APP_ENV=production in $APP_ROOT/.env" >&2; exit 1; }
     - cd "$APP_ROOT" && grep -Eq '^APP_DEBUG=false[[:space:]]*$' .env || { echo "Set APP_DEBUG=false in $APP_ROOT/.env" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^APP_URL=https://[^[:space:]]+[[:space:]]*$' .env || { echo "Set APP_URL to the production HTTPS URL in $APP_ROOT/.env" >&2; exit 1; }
     - cd "$APP_ROOT" && grep -Eq '^APP_KEY=[^[:space:]]+[[:space:]]*$' .env || { echo "Set a nonempty APP_KEY in $APP_ROOT/.env" >&2; exit 1; }
     - cd "$APP_ROOT" && grep -Eq '^DB_CONNECTION=mysql[[:space:]]*$' .env || { echo "Set DB_CONNECTION=mysql in $APP_ROOT/.env" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^SESSION_SECURE_COOKIE=true[[:space:]]*$' .env || { echo "Set SESSION_SECURE_COOKIE=true in $APP_ROOT/.env" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^QUEUE_CONNECTION=sync[[:space:]]*$' .env || { echo "Set QUEUE_CONNECTION=sync in $APP_ROOT/.env so customer and admin emails are delivered on shared hosting" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^ADMIN_PASSWORD=.+$' .env || { echo "Set ADMIN_PASSWORD in $APP_ROOT/.env before deployment so the initial administrator can be created" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^MAIL_MAILER=smtp[[:space:]]*$' .env || { echo "Configure MAIL_MAILER=smtp in $APP_ROOT/.env" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^MAIL_HOST=.+$' .env || { echo "Configure MAIL_HOST in $APP_ROOT/.env" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^MAIL_USERNAME=.+$' .env || { echo "Configure MAIL_USERNAME in $APP_ROOT/.env" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^MAIL_PASSWORD=.+$' .env || { echo "Configure MAIL_PASSWORD in $APP_ROOT/.env" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^MAIL_FROM_ADDRESS=.+$' .env || { echo "Configure MAIL_FROM_ADDRESS in $APP_ROOT/.env" >&2; exit 1; }
     - if [ "$REPO_ROOT" != "$APP_ROOT" ]; then for d in app config resources routes; do /bin/mkdir -p "$APP_ROOT/$d"; /bin/cp -R "$REPO_ROOT/$d/." "$APP_ROOT/$d/"; done; fi
     - /bin/mkdir -p "$APP_ROOT/bootstrap/cache" "$APP_ROOT/database" "$APP_ROOT/public" "$APP_ROOT/storage/app/public" "$APP_ROOT/storage/framework/cache" "$APP_ROOT/storage/framework/sessions" "$APP_ROOT/storage/framework/views" "$APP_ROOT/storage/logs"
     - if [ "$REPO_ROOT" != "$APP_ROOT" ]; then /bin/cp "$REPO_ROOT/bootstrap/app.php" "$REPO_ROOT/bootstrap/providers.php" "$APP_ROOT/bootstrap/"; fi
@@ -22,6 +31,7 @@ deployment:
     - export PHP_BIN="$(command -v php || true)"
     - for candidate in /opt/cpanel/ea-php84/root/usr/bin/php /opt/alt/php84/usr/bin/php; do if [ -x "$candidate" ]; then export PHP_BIN="$candidate"; break; fi; done
     - test -n "$PHP_BIN" && "$PHP_BIN" -r 'if (PHP_VERSION_ID < 80401) exit(1);' || { echo "PHP CLI 8.4.1 or newer is required for the prebuilt dependencies" >&2; exit 1; }
+    - cd "$APP_ROOT" && "$PHP_BIN" -r 'foreach (["pdo_mysql", "fileinfo", "mbstring", "openssl", "tokenizer", "xml", "ctype", "json", "zip"] as $extension) { if (! extension_loaded($extension)) { fwrite(STDERR, "Missing required PHP extension: $extension\n"); exit(1); } } if (! class_exists(ZipArchive::class)) { fwrite(STDERR, "PHP ZipArchive support is required for Excel reports\n"); exit(1); }' || { echo "The selected cPanel PHP CLI is missing a required extension" >&2; exit 1; }
     - cd "$APP_ROOT" && test -f vendor/autoload.php || { echo "Missing prebuilt vendor/autoload.php in $APP_ROOT; extract the runtime ZIP first" >&2; exit 1; }
     - cd "$APP_ROOT" && test -f public/build/manifest.json || { echo "Missing prebuilt public/build/manifest.json in $APP_ROOT; extract the runtime ZIP first" >&2; exit 1; }
     - /bin/mkdir -p "$PUBLIC_ROOT/build" "$PUBLIC_ROOT/images"
@@ -30,6 +40,7 @@ deployment:
     - /bin/cp "$APP_ROOT/public/favicon.ico" "$APP_ROOT/public/robots.txt" "$PUBLIC_ROOT/"
     - cd "$APP_ROOT" && "$PHP_BIN" artisan package:discover --no-ansi
     - cd "$APP_ROOT" && "$PHP_BIN" artisan migrate --force
+    - cd "$APP_ROOT" && "$PHP_BIN" artisan db:seed --class=AdminUserSeeder --force
     - cd "$APP_ROOT" && "$PHP_BIN" artisan config:cache && "$PHP_BIN" artisan view:cache
     - if [ -e "$APP_ROOT/public/storage" ] && [ ! -L "$APP_ROOT/public/storage" ]; then echo "Move the existing application public/storage directory before deployment" >&2; exit 1; fi
     - /bin/ln -sfn "$APP_ROOT/storage/app/public" "$APP_ROOT/public/storage"

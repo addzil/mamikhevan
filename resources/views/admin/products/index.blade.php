@@ -92,9 +92,15 @@
                                 @endif
                             </td>
                             <td class="whitespace-nowrap px-5 py-4">
-                                <span class="rounded-lg px-2 py-1 text-[11px] font-extrabold {{ $product->stock <= 5 ? 'bg-amber-50 text-yellow-700' : 'bg-emerald-50 text-emerald-600' }}">
-                                    {{ $product->stock }} buah
+                                <span class="rounded-lg px-2 py-1 text-[11px] font-extrabold {{ $product->isInStock() ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-yellow-700' }}">
+                                    {{ $product->stock }} total
                                 </span>
+                                @if ($product->sizeList() !== [])
+                                    <p class="mt-1 text-[10px] font-semibold text-stone-400">{{ collect($product->sizeStockMap())->map(fn ($quantity, $size) => $size.': '.$quantity)->implode(' · ') }}</p>
+                                    @if ($product->unallocated_stock > 0)
+                                        <p class="mt-1 text-[10px] font-bold text-amber-700">{{ $product->unallocated_stock }} belum dialokasikan</p>
+                                    @endif
+                                @endif
                             </td>
                             <td class="px-5 py-4">
                                 @if ($product->is_active)

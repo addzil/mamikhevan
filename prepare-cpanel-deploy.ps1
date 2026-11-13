@@ -2,6 +2,7 @@ Set-StrictMode -Version Latest
 $ErrorActionPreference = 'Stop'
 
 Push-Location $PSScriptRoot
+$stagingRoot = $null
 try {
     if (-not (Test-Path -LiteralPath 'vendor/autoload.php')) {
         throw 'vendor/autoload.php tidak ada. Jalankan composer install terlebih dahulu.'
@@ -20,6 +21,22 @@ try {
         throw "File environment rahasia terlacak Git: $($trackedEnvironmentFiles -join ', ')"
     }
 
+    $composerCommand = Get-Command composer -ErrorAction Stop
+    $stagingRoot = Join-Path $PSScriptRoot ".cpanel-build-$PID"
+    New-Item -ItemType Directory -Path $stagingRoot | Out-Null
+    Copy-Item -LiteralPath 'composer.json', 'composer.lock' -Destination $stagingRoot
+    Copy-Item -LiteralPath 'vendor' -Destination $stagingRoot -Recurse
+    Copy-Item -LiteralPath 'app' -Destination $stagingRoot -Recurse
+    New-Item -ItemType Directory -Path (Join-Path $stagingRoot 'database/factories') -Force | Out-Null
+    New-Item -ItemType Directory -Path (Join-Path $stagingRoot 'database/seeders') -Force | Out-Null
+    Copy-Item -Path 'database/factories/*' -Destination (Join-Path $stagingRoot 'database/factories') -Recurse -Force
+    Copy-Item -Path 'database/seeders/*' -Destination (Join-Path $stagingRoot 'database/seeders') -Recurse -Force
+
+    & $composerCommand.Source install "--working-dir=$stagingRoot" --no-dev --no-interaction --prefer-dist --optimize-autoloader --no-scripts
+    if ($LASTEXITCODE -ne 0) {
+        throw 'Instalasi dependensi production tanpa paket development gagal.'
+    }
+
     & npm.cmd run build
     if ($LASTEXITCODE -ne 0) {
         throw 'Build frontend gagal.'
@@ -31,8 +48,11 @@ try {
 
     $archive = Join-Path $PSScriptRoot 'cpanel-runtime-no-terminal.zip'
     $candidateArchive = Join-Path $PSScriptRoot 'cpanel-runtime-candidate.zip'
+    New-Item -ItemType Directory -Path (Join-Path $stagingRoot 'public/build') -Force | Out-Null
+    Copy-Item -Path 'public/build/*' -Destination (Join-Path $stagingRoot 'public/build') -Recurse -Force
 
     try {
+        Push-Location $stagingRoot
         & tar.exe -a -cf $candidateArchive vendor public/build
         if ($LASTEXITCODE -ne 0) {
             throw 'Gagal membuat arsip runtime cPanel.'
@@ -44,7 +64,7 @@ try {
         }
 
         $requiredEntries = @('vendor/autoload.php', 'public/build/manifest.json')
-        $manifest = Get-Content -LiteralPath 'public/build/manifest.json' -Raw | ConvertFrom-Json
+        $manifest = Get-Content -LiteralPath (Join-Path $PSScriptRoot 'public/build/manifest.json') -Raw | ConvertFrom-Json
         foreach ($entry in $manifest.PSObject.Properties) {
             $requiredEntries += "public/build/$($entry.Value.file)"
         }
@@ -58,6 +78,7 @@ try {
         Move-Item -LiteralPath $candidateArchive -Destination $archive -Force
     }
     finally {
+        Pop-Location
         if (Test-Path -LiteralPath $candidateArchive) {
             Remove-Item -LiteralPath $candidateArchive -Force
         }
@@ -67,5 +88,8 @@ try {
     & git status --short
 }
 finally {
+    if ($stagingRoot -and (Test-Path -LiteralPath $stagingRoot)) {
+        Remove-Item -LiteralPath $stagingRoot -Recurse -Force
+    }
     Pop-Location
 }

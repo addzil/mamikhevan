@@ -8,23 +8,23 @@
     @php
         $cards = [
             [
-                'label' => 'Total nilai pesanan',
+                'label' => 'Nilai pesanan aktif',
                 'value' => 'Rp'.number_format($stats['revenue'], 0, ',', '.'),
-                'hint' => $stats['orders'].' pesanan tercatat',
+                'hint' => $stats['orders'].' pesanan, tidak termasuk yang dibatalkan',
                 'icon' => 'revenue',
                 'tone' => 'bg-amber-50 text-yellow-700',
             ],
             [
-                'label' => 'Margin kotor',
+                'label' => 'Margin produk',
                 'value' => 'Rp'.number_format($stats['margin'], 0, ',', '.'),
-                'hint' => 'Pendapatan produk - harga modal',
+                'hint' => 'Penjualan bersih produk - modal tersimpan',
                 'icon' => 'margin',
                 'tone' => 'bg-emerald-50 text-emerald-500',
             ],
             [
-                'label' => 'Margin rata-rata',
+                'label' => 'Persentase margin',
                 'value' => number_format($stats['margin_percent'], 1, ',', '.').'%',
-                'hint' => 'Dari pendapatan produk',
+                'hint' => 'Dari penjualan bersih produk',
                 'icon' => 'percent',
                 'tone' => 'bg-violet-50 text-violet-500',
             ],
@@ -38,7 +38,7 @@
             [
                 'label' => 'Produk aktif',
                 'value' => number_format($stats['products'], 0, ',', '.'),
-                'hint' => $stats['customers'].' pelanggan unik',
+                'hint' => $stats['customers'].' pelanggan dari pesanan aktif',
                 'icon' => 'box',
                 'tone' => 'bg-sky-50 text-sky-500',
             ],
@@ -102,16 +102,19 @@
     </div>
 
     <div class="mt-6 grid gap-6 xl:grid-cols-3">
+        <p class="xl:col-span-3 rounded-2xl border border-amber-100 bg-amber-50 px-4 py-3 text-xs font-semibold leading-5 text-amber-800">
+            Nilai pesanan memakai total order tersimpan (termasuk ongkir dan kode unik) serta mencakup transfer yang menunggu pembayaran. Margin produk mengurangi diskon dan memasukkan modal hadiah promo, tetapi belum mencakup ongkir ekspedisi, biaya pembayaran, atau biaya operasional. Pesanan lama sebelum snapshot modal memakai modal produk saat ini.
+        </p>
         <div class="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm xl:col-span-2">
             <div class="flex flex-wrap items-start justify-between gap-2">
                 <div>
-                    <h2 class="font-display text-lg font-bold text-stone-900">Penjualan per bulan</h2>
+                    <h2 class="font-display text-lg font-bold text-stone-900">Nilai pesanan per bulan</h2>
                     <p class="text-xs font-semibold text-stone-400">Nilai pesanan dan jumlah pesanan 12 bulan terakhir.</p>
                 </div>
                 <span class="rounded-full bg-amber-50 px-2.5 py-1 text-[10px] font-extrabold text-yellow-700">12 bulan</span>
             </div>
             <div class="relative mt-4 h-72">
-                <canvas id="chartMonthly" aria-label="Grafik penjualan per bulan" role="img"></canvas>
+                <canvas id="chartMonthly" aria-label="Grafik nilai pesanan per bulan" role="img"></canvas>
             </div>
         </div>
 
@@ -127,7 +130,7 @@
 
         <div class="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
             <div>
-                <h2 class="font-display text-lg font-bold text-stone-900">Penjualan per tahun</h2>
+                    <h2 class="font-display text-lg font-bold text-stone-900">Nilai pesanan per tahun</h2>
                 <p class="text-xs font-semibold text-stone-400">Nilai pesanan lima tahun terakhir.</p>
             </div>
             <div class="relative mt-4 h-72">
@@ -138,8 +141,8 @@
         <div class="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm xl:col-span-2">
             <div class="flex flex-wrap items-start justify-between gap-2">
                 <div>
-                    <h2 class="font-display text-lg font-bold text-stone-900">Margin &amp; pendapatan</h2>
-                    <p class="text-xs font-semibold text-stone-400">Perbandingan pendapatan produk, modal, dan margin per bulan.</p>
+                    <h2 class="font-display text-lg font-bold text-stone-900">Penjualan produk, modal &amp; margin</h2>
+                    <p class="text-xs font-semibold text-stone-400">Penjualan produk setelah diskon, modal produk, dan margin per bulan.</p>
                 </div>
                 <span class="rounded-full bg-emerald-50 px-2.5 py-1 text-[10px] font-extrabold text-emerald-600">Margin {{ number_format($stats['margin_percent'], 1, ',', '.') }}%</span>
             </div>
@@ -164,7 +167,7 @@
 
         <div class="rounded-3xl border border-stone-200 bg-white p-5 shadow-sm">
             <h2 class="font-display text-lg font-bold text-stone-900">Ringkasan kategori</h2>
-            <p class="text-xs font-semibold text-stone-400">Kontribusi penjualan per kategori.</p>
+            <p class="text-xs font-semibold text-stone-400">Penjualan bersih dan margin menurut kategori produk.</p>
 
             <div class="mt-4 space-y-4">
                 @php $maxCategoryQty = max(1, $bestSellingCategories->max('quantity')); @endphp
@@ -256,8 +259,11 @@
                             <div class="min-w-0 flex-1">
                                 <p class="truncate text-xs font-extrabold text-stone-800">{{ $product->name }}</p>
                                 <p class="text-[11px] font-semibold text-stone-400">{{ $product->category?->name ?? 'Tanpa kategori' }}</p>
+                                @if ($product->sizeList() !== [])
+                                    <p class="text-[10px] font-bold text-amber-700">{{ $product->low_stock_sizes->map(fn ($stock, $size) => $size.': '.$stock)->implode(' · ') }}</p>
+                                @endif
                             </div>
-                            <span class="rounded-lg bg-amber-50 px-2 py-1 text-[11px] font-extrabold text-yellow-700">{{ $product->stock }}</span>
+                            <span class="rounded-lg bg-amber-50 px-2 py-1 text-[11px] font-extrabold text-yellow-700">{{ $product->stock }} total</span>
                         </a>
                     @empty
                         <p class="rounded-2xl bg-emerald-50 px-4 py-6 text-center text-xs font-semibold text-emerald-600">Semua stok aman. Mantap!</p>

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class OrderItem extends Model
 {
@@ -12,10 +13,14 @@ class OrderItem extends Model
         'order_id',
         'product_id',
         'product_name',
+        'category_name',
         'size',
         'price',
         'quantity',
         'subtotal',
+        'cost_price',
+        'is_promo_gift',
+        'original_price',
     ];
 
     protected function casts(): array
@@ -24,6 +29,9 @@ class OrderItem extends Model
             'price' => 'integer',
             'quantity' => 'integer',
             'subtotal' => 'integer',
+            'cost_price' => 'integer',
+            'is_promo_gift' => 'boolean',
+            'original_price' => 'integer',
         ];
     }
 
@@ -35,6 +43,18 @@ class OrderItem extends Model
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
+    }
+
+    public function review(): HasOne
+    {
+        return $this->hasOne(Review::class);
+    }
+
+    public function productDisplayName(): string
+    {
+        return $this->size !== null
+            ? $this->product_name.' (Ukuran '.$this->size.')'
+            : $this->product_name;
     }
 
     protected function priceFormatted(): Attribute

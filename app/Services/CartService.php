@@ -9,17 +9,13 @@ class CartService
 {
     private const SESSION_KEY = 'cart';
 
-    public const FREE_SHIPPING_MIN = 300000;
-
-    public const SHIPPING_COST = 20000;
-
     public function contents(): array
     {
         return session()->get(self::SESSION_KEY, []);
     }
 
     /**
-     * @return array<string, array{key: string, product: Product, quantity: int, size: ?string, subtotal: int}>
+     * @return array<string, array{key: string, product: Product, quantity: int, size: ?string, subtotal: int, available_stock: int}>
      */
     public function items(): array
     {
@@ -32,6 +28,7 @@ class CartService
         /** @var Collection<int, Product> $products */
         $products = Product::query()
             ->active()
+            ->with('category')
             ->whereIn('id', collect($contents)->pluck('product_id')->unique()->all())
             ->get()
             ->keyBy('id');
@@ -46,13 +43,15 @@ class CartService
             }
 
             $quantity = max(1, (int) ($row['quantity'] ?? 1));
+            $size = $row['size'] ?? null;
 
             $items[$key] = [
                 'key' => $key,
                 'product' => $product,
                 'quantity' => $quantity,
-                'size' => $row['size'] ?? null,
+                'size' => $size,
                 'subtotal' => $product->price * $quantity,
+                'available_stock' => $product->stockForSize($size),
             ];
         }
 
@@ -69,26 +68,16 @@ class CartService
         return (int) collect($this->items())->sum('subtotal');
     }
 
-    public function shipping(): int
-    {
-        $subtotal = $this->subtotal();
-
-        if ($subtotal === 0) {
-            return 0;
-        }
-
-        return $subtotal >= self::FREE_SHIPPING_MIN ? 0 : self::SHIPPING_COST;
-    }
-
-    public function total(): int
-    {
-        return $this->subtotal() + $this->shipping();
-    }
-
     public function add(Product $product, int $quantity, ?string $size = null): void
     {
-        $quantity = max(1, min($quantity, max(1, $product->stock)));
         $size = $size ?: null;
+        $availableStock = $product->stockForSize($size);
+
+        if ($availableStock < 1) {
+            return;
+        }
+
+        $quantity = max(1, min($quantity, $availableStock));
         $key = $this->key($product, $size);
 
         $cart = $this->contents();
@@ -96,7 +85,7 @@ class CartService
 
         $cart[$key] = [
             'product_id' => $product->id,
-            'quantity' => min($current + $quantity, max(1, $product->stock)),
+            'quantity' => min($current + $quantity, $availableStock),
             'size' => $size,
         ];
 
@@ -120,7 +109,16 @@ class CartService
             return;
         }
 
-        $cart[$key]['quantity'] = max(1, min($quantity, max(1, $product->stock)));
+        $availableStock = $product->stockForSize($cart[$key]['size'] ?? null);
+
+        if ($availableStock < 1) {
+            unset($cart[$key]);
+            session()->put(self::SESSION_KEY, $cart);
+
+            return;
+        }
+
+        $cart[$key]['quantity'] = max(1, min($quantity, $availableStock));
         session()->put(self::SESSION_KEY, $cart);
     }
 

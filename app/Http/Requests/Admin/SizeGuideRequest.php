@@ -10,7 +10,7 @@ class SizeGuideRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return (bool) $this->user()?->is_admin;
+        return (bool) $this->user()?->isAdmin();
     }
 
     public function rules(): array
@@ -31,20 +31,20 @@ class SizeGuideRequest extends FormRequest
                 'max:100',
                 Rule::unique('size_guide_types', 'slug')->ignore($sizeGuide?->id),
             ],
-            'description'          => ['nullable', 'string', 'max:300'],
-            'measurement_fields'   => ['required', 'array', 'min:1'],
+            'description' => ['nullable', 'string', 'max:300'],
+            'measurement_fields' => ['required', 'array', 'min:1'],
             'measurement_fields.*' => ['string', Rule::in($validFields)],
-            'entries'              => ['required', 'array', 'min:1'],
-            'entries.*.label'      => ['required', 'string', 'max:20'],
-            'entries.*.age_range'  => ['nullable', 'string', 'max:40'],
-            'entries.*.weight_kg'  => ['nullable', 'string', 'max:20'],
-            'entries.*.height_cm'  => ['nullable', 'string', 'max:20'],
-            'entries.*.chest_cm'   => ['nullable', 'string', 'max:20'],
-            'entries.*.waist_cm'   => ['nullable', 'string', 'max:20'],
-            'entries.*.hip_cm'     => ['nullable', 'string', 'max:20'],
-            'entries.*.thigh_cm'   => ['nullable', 'string', 'max:20'],
-            'entries.*.length_cm'  => ['nullable', 'string', 'max:20'],
-            'entries.*.sleeve_cm'  => ['nullable', 'string', 'max:20'],
+            'entries' => ['required', 'array', 'min:1'],
+            'entries.*.label' => ['required', 'string', 'max:20'],
+            'entries.*.age_range' => ['nullable', 'string', 'max:40'],
+            'entries.*.weight_kg' => ['nullable', 'string', 'max:20'],
+            'entries.*.height_cm' => ['nullable', 'string', 'max:20'],
+            'entries.*.chest_cm' => ['nullable', 'string', 'max:20'],
+            'entries.*.waist_cm' => ['nullable', 'string', 'max:20'],
+            'entries.*.hip_cm' => ['nullable', 'string', 'max:20'],
+            'entries.*.thigh_cm' => ['nullable', 'string', 'max:20'],
+            'entries.*.length_cm' => ['nullable', 'string', 'max:20'],
+            'entries.*.sleeve_cm' => ['nullable', 'string', 'max:20'],
             'entries.*.sort_order' => ['integer', 'min:0'],
         ];
     }
