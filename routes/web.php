@@ -24,8 +24,15 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Storage;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
+Route::get('/storage/{path}', function (string $path) {
+    abort_unless(Storage::disk('public')->exists($path), 404);
+
+    return Storage::disk('public')->response($path);
+})->where('path', '.*')->name('storage.public');
+
 Route::get('/katalog', [ProductController::class, 'index'])->name('products.index');
 Route::get('/katalog/{product:slug}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/tentang', AboutController::class)->name('about');

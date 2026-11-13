@@ -20,7 +20,7 @@ DirectoryIndex index.php
     RewriteRule ^((?:build|images|storage)/.+|favicon\.ico|robots\.txt)$ mamikhevan/public/$1 [L]
 
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(?:build|images|storage)/ - [R=404,L]
+    RewriteRule ^(?:build|images)/ - [R=404,L]
 
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
