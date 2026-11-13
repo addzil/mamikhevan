@@ -19,12 +19,16 @@
             <label class="text-xs font-bold text-stone-600">Tema warna<select name="background" class="mt-2 w-full rounded-xl border-stone-200 text-sm"><option value="warm" @selected($banner->background === 'warm')>Hangat amber</option><option value="mint" @selected($banner->background === 'mint')>Mint segar</option><option value="lavender" @selected($banner->background === 'lavender')>Lavender lembut</option></select></label>
         </section>
         <section class="grid gap-4 rounded-3xl border border-stone-200 bg-white p-6 lg:grid-cols-3">
-            @foreach ($banner->cards ?? [] as $index => $card)
+            <p class="text-xs font-semibold text-stone-500 lg:col-span-3">Pilih minimal satu produk. Kartu lain boleh dikosongkan.</p>
+            @error('cards')
+                <p class="text-xs font-semibold text-red-600 lg:col-span-3">{{ $message }}</p>
+            @enderror
+            @foreach (array_pad($banner->cards ?? [], 3, []) as $index => $card)
                 <div class="rounded-2xl border border-stone-100 p-4">
                     <h2 class="font-display font-bold text-stone-800">Kartu {{ $index + 1 }}</h2>
                     @php($selectedProduct = $products->firstWhere('id', old("cards.$index.product_id", $card['product_id'] ?? null)))
                     <img id="banner-product-preview-{{ $index }}" class="{{ $selectedProduct?->image_url ? 'mt-3' : 'mt-3 hidden' }} aspect-square w-full rounded-xl object-cover" src="{{ $selectedProduct?->image_url ?? '' }}" alt="Preview {{ $selectedProduct?->name ?? 'produk banner' }}">
-                    <label class="mt-3 block text-xs font-bold text-stone-600">Pilih produk (nama, gambar, harga, dan tautan detail diambil otomatis)<select name="cards[{{ $index }}][product_id]" required onchange="const image = document.getElementById('banner-product-preview-{{ $index }}'); const source = this.selectedOptions[0].dataset.image || ''; image.src = source; image.alt = 'Preview ' + (this.selectedOptions[0].text || 'produk banner'); image.classList.toggle('hidden', !source);" class="mt-1 w-full rounded-lg border-stone-200 text-sm"><option value="" data-image="">Pilih produk</option>@foreach ($products as $product)<option value="{{ $product->id }}" data-image="{{ $product->image_url }}" @selected((string) old("cards.$index.product_id", $card['product_id'] ?? '') === (string) $product->id)>{{ $product->name }} — {{ $product->price_formatted }}</option>@endforeach</select></label>
+                    <label class="mt-3 block text-xs font-bold text-stone-600">Pilih produk (nama, gambar, harga, dan tautan detail diambil otomatis)<select name="cards[{{ $index }}][product_id]" onchange="const image = document.getElementById('banner-product-preview-{{ $index }}'); const source = this.selectedOptions[0].dataset.image || ''; image.src = source; image.alt = 'Preview ' + (this.selectedOptions[0].text || 'produk banner'); image.classList.toggle('hidden', !source);" class="mt-1 w-full rounded-lg border-stone-200 text-sm"><option value="" data-image="">Pilih produk</option>@foreach ($products as $product)<option value="{{ $product->id }}" data-image="{{ $product->image_url }}" @selected((string) old("cards.$index.product_id", $card['product_id'] ?? '') === (string) $product->id)>{{ $product->name }} — {{ $product->price_formatted }}</option>@endforeach</select></label>
                     <label class="mt-3 block text-xs font-bold text-stone-600">Label<input name="cards[{{ $index }}][label]" maxlength="40" value="{{ old("cards.$index.label", $card['label'] ?? '') }}" placeholder="Favorit, Newborn, Sale" class="mt-1 w-full rounded-lg border-stone-200 text-sm"></label>
                 </div>
             @endforeach

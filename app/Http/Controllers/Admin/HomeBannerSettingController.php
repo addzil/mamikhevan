@@ -24,7 +24,11 @@ class HomeBannerSettingController extends Controller
         $banner = HomeBannerSetting::current();
         $cards = [];
 
-        foreach ($request->validated('cards', []) as $index => $card) {
+        foreach ($request->validated('cards', []) as $card) {
+            if (blank($card['product_id'] ?? null)) {
+                continue;
+            }
+
             $cards[] = [
                 'label' => $card['label'] ?? '',
                 'product_id' => $card['product_id'],

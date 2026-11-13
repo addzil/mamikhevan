@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Mail\ContactReplyMail;
 use App\Models\Category;
 use App\Models\ContactMessage;
+use App\Models\HomeBannerSetting;
 use App\Models\Order;
 use App\Models\PaymentSetting;
 use App\Models\Product;
@@ -397,5 +398,54 @@ class AdminPanelTest extends TestCase
         $this->assertSame(750, $product->weight_grams);
         $this->assertCount(1, $product->images);
         $this->assertCount(2, $product->galleryImageUrls());
+    }
+
+    public function test_admin_can_save_a_banner_with_only_one_product(): void
+    {
+        $product = Product::query()->active()->firstOrFail();
+
+        $this->actingAs($this->admin)
+            ->put(route('admin.home-banner.update'), [
+                'eyebrow' => 'Pilihan baru',
+                'headline' => 'Pilihan terbaik untuk anak',
+                'description' => 'Lihat koleksi terbaru.',
+                'design' => 'collage',
+                'background' => 'warm',
+                'is_active' => '1',
+                'cards' => [
+                    ['product_id' => '', 'label' => ''],
+                    ['product_id' => '', 'label' => ''],
+                    ['product_id' => $product->id, 'label' => 'Pilihan khusus'],
+                ],
+            ])
+            ->assertSessionHasNoErrors()
+            ->assertSessionHas('success');
+
+        $this->assertSame([['label' => 'Pilihan khusus', 'product_id' => $product->id]], HomeBannerSetting::current()->cards);
+        $this->get(route('home'))->assertSee('Pilihan khusus');
+        $this->get(route('admin.home-banner.edit'))->assertSee('cards[2][product_id]', false);
+    }
+
+    public function test_admin_must_select_at_least_one_banner_product(): void
+    {
+        $banner = HomeBannerSetting::current();
+        $originalCards = $banner->cards;
+
+        $this->actingAs($this->admin)
+            ->put(route('admin.home-banner.update'), [
+                'eyebrow' => 'Pilihan baru',
+                'headline' => 'Pilihan terbaik untuk anak',
+                'design' => 'collage',
+                'background' => 'warm',
+                'is_active' => '1',
+                'cards' => [
+                    ['product_id' => '', 'label' => ''],
+                    ['product_id' => '', 'label' => ''],
+                    ['product_id' => '', 'label' => ''],
+                ],
+            ])
+            ->assertSessionHasErrors('cards');
+
+        $this->assertSame($originalCards, $banner->refresh()->cards);
     }
 }
