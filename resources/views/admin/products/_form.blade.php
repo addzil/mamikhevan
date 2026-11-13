@@ -350,7 +350,7 @@
             <div
                  class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4"
                  x-show="{{ $product?->image_url || $existingGallery->isNotEmpty() ? 'true' : 'false' }} || previews.length > 0">
-                @if ($product?->image_url)
+                @if (filled($product?->image))
                     <label
                            class="group relative block aspect-square cursor-pointer overflow-hidden rounded-2xl border border-amber-200 bg-white shadow-sm">
                         <img src="{{ $product->image_url }}" alt="Foto utama {{ $product->name }}"

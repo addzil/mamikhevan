@@ -150,7 +150,11 @@ class ProductController extends Controller
         $uploaded = $this->storeUploadedImages($request);
 
         if ($uploaded->isNotEmpty()) {
-            if (blank($data['image'] ?? $product->image)) {
+            $hasPrimaryImage = array_key_exists('image', $data)
+                ? filled($data['image'])
+                : filled($product->image);
+
+            if (! $hasPrimaryImage) {
                 $data['image'] = $uploaded->shift();
             }
 
@@ -166,7 +170,11 @@ class ProductController extends Controller
             );
         }
 
-        if (blank($data['image'] ?? $product->image)) {
+        $hasPrimaryImage = array_key_exists('image', $data)
+            ? filled($data['image'])
+            : filled($product->image);
+
+        if (! $hasPrimaryImage) {
             $promoted = $product->images()->first();
 
             if ($promoted) {
