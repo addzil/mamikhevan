@@ -32,6 +32,7 @@ class Product extends Model
         'age_group',
         'material',
         'image',
+        'image_fit',
         'is_featured',
         'is_active',
         'cod_available',

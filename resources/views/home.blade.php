@@ -78,7 +78,7 @@
                     <div class="absolute {{ $heroImageClasses[$index] ?? 'hidden' }} overflow-hidden rounded-[2rem] border border-white/80 bg-white p-2 shadow-2xl shadow-amber-200/50 transition duration-500 hover:rotate-0 hover:scale-[1.03]">
                     @endif
                         <div class="overflow-hidden rounded-[1.6rem]">
-                            <img src="{{ $product?->image_url ?? asset($image['image'] ?? 'images/products/dress.svg') }}" alt="{{ $product?->name ?? $image['name'] ?? '' }}" class="aspect-square w-full object-cover">
+                            <img src="{{ $product?->image_url ?? asset($image['image'] ?? 'images/products/dress.svg') }}" alt="{{ $product?->name ?? $image['name'] ?? '' }}" class="aspect-square w-full {{ $product?->image_fit === 'cover' ? 'object-cover' : 'object-contain' }}">
                         </div>
                         <div class="flex items-center justify-between gap-2 px-2 pb-1 pt-3">
                             <div>

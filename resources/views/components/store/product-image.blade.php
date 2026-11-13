@@ -2,7 +2,7 @@
 
 @if ($product->image_url)
     <img src="{{ $product->image_url }}" alt="Ilustrasi {{ $product->name }}"
-         class="h-full w-full object-cover {{ $class }}" loading="lazy">
+         class="h-full w-full {{ $product->image_fit === 'cover' ? 'object-cover' : 'object-contain' }} {{ $class }}" loading="lazy">
 @else
     <div class="grid h-full w-full place-items-center bg-gradient-to-br from-yellow-100 via-amber-100 to-amber-100 {{ $class }}">
         <svg class="h-1/3 w-1/3 text-amber-400/70" fill="none" viewBox="0 0 24 24" stroke-width="1.2" stroke="currentColor">

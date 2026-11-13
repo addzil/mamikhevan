@@ -45,7 +45,7 @@
                     <div class="aspect-square overflow-hidden rounded-[2rem] bg-yellow-50">
                         <template x-if="images.length">
                             <img :src="images[active]" alt="Foto {{ $product->name }}"
-                                 class="h-full w-full object-cover transition duration-500 hover:scale-[1.02]">
+                                 class="h-full w-full {{ $product->image_fit === 'cover' ? 'object-cover hover:scale-[1.02]' : 'object-contain' }} transition duration-500">
                         </template>
                         <template x-if="!images.length">
                             <x-store.product-image :product="$product"
@@ -74,7 +74,7 @@
                                     class="h-16 w-16 flex-none overflow-hidden rounded-xl border-2 bg-white p-0.5 transition"
                                     :class="active === index ? 'border-amber-500' : 'border-yellow-100 hover:border-amber-300'"
                                     :aria-label="'Tampilkan foto ' + (index + 1)">
-                                <img :src="image" alt="" class="h-full w-full rounded-lg object-cover">
+                                <img :src="image" alt="" class="h-full w-full rounded-lg {{ $product->image_fit === 'cover' ? 'object-cover' : 'object-contain' }}">
                             </button>
                         </template>
                     </div>

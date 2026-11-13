@@ -2,7 +2,7 @@
 
 <article class="group flex h-full flex-col overflow-hidden rounded-[1.75rem] border border-yellow-100 bg-white shadow-sm transition duration-300 hover:-translate-y-1 hover:border-amber-200 hover:shadow-xl">
     <a href="{{ route('products.show', $product) }}" class="relative block aspect-square overflow-hidden bg-yellow-50">
-        <x-store.product-image :product="$product" class="transition duration-500 group-hover:scale-105" />
+        <x-store.product-image :product="$product" class="transition duration-500 {{ $product->image_fit === 'cover' ? 'group-hover:scale-105' : '' }}" />
 
         <div class="absolute left-3 top-3 flex flex-col items-start gap-1.5">
             @if ($product->hasDiscount())

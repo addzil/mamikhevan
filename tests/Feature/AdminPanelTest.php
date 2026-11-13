@@ -400,6 +400,60 @@ class AdminPanelTest extends TestCase
         $this->assertCount(2, $product->galleryImageUrls());
     }
 
+    public function test_admin_can_adjust_product_image_fit_without_changing_the_uploaded_file(): void
+    {
+        $product = Product::query()->create([
+            'name' => 'Produk Foto Tinggi',
+            'description' => 'Foto produk ini perlu tampil utuh dalam bingkai persegi.',
+            'price' => 50000,
+            'stock' => 1,
+            'gender' => 'uniseks',
+            'image' => 'images/products/dress.svg',
+            'is_active' => true,
+        ]);
+
+        $this->assertSame('contain', $product->refresh()->image_fit);
+        $this->get(route('products.show', $product))->assertOk()->assertSee('object-contain transition duration-500', false);
+
+        $this->actingAs($this->admin)
+            ->patch(route('admin.products.update', $product), [
+                'name' => $product->name,
+                'description' => $product->description,
+                'price' => $product->price,
+                'gender' => $product->gender,
+                'image_fit' => 'cover',
+                'is_active' => '1',
+            ])
+            ->assertRedirect(route('admin.products.index'));
+
+        $this->assertSame('cover', $product->refresh()->image_fit);
+        $this->assertSame('images/products/dress.svg', $product->image);
+        $this->get(route('products.show', $product))->assertOk()->assertSee('object-cover hover:scale-[1.02]', false);
+    }
+
+    public function test_admin_cannot_save_an_unknown_product_image_fit(): void
+    {
+        $product = Product::query()->create([
+            'name' => 'Produk Foto Invalid',
+            'description' => 'Produk untuk memeriksa pilihan tampilan foto yang tidak dikenal.',
+            'price' => 50000,
+            'stock' => 1,
+            'gender' => 'uniseks',
+        ]);
+
+        $this->actingAs($this->admin)
+            ->patch(route('admin.products.update', $product), [
+                'name' => $product->name,
+                'description' => $product->description,
+                'price' => $product->price,
+                'gender' => $product->gender,
+                'image_fit' => 'stretch',
+            ])
+            ->assertSessionHasErrors('image_fit');
+
+        $this->assertSame('contain', $product->refresh()->image_fit);
+    }
+
     public function test_admin_can_save_a_banner_with_only_one_product(): void
     {
         $product = Product::query()->active()->firstOrFail();

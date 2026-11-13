@@ -43,6 +43,7 @@ class ProductRequest extends FormRequest
             'material' => ['nullable', 'string', 'max:100'],
             'images' => ['nullable', 'array', 'max:8'],
             'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:2048'],
+            'image_fit' => ['nullable', Rule::in(['contain', 'cover'])],
             'removed_images' => ['nullable', 'array'],
             'removed_images.*' => ['integer'],
             'remove_image' => ['boolean'],

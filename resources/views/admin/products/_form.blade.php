@@ -310,6 +310,7 @@
 
     <div class="sm:col-span-2"
          x-data="{
+            imageFit: @js(old('image_fit', $product?->image_fit ?? 'contain')),
             files: [],
             previews: [],
             handleFiles(event) {
@@ -344,8 +345,18 @@
                    accept=".jpg,.jpeg,.png,.webp,image/*" @change="handleFiles($event)"
                    class="block w-full text-xs font-semibold text-stone-500 file:mr-3 file:rounded-xl file:border-0 file:bg-amber-500 file:px-4 file:py-2.5 file:text-xs file:font-extrabold file:text-white hover:file:bg-amber-600">
             <p class="mt-2 text-[11px] font-semibold text-stone-400">Format JPG, PNG, atau
-                WEBP. Maksimal 2 MB per foto dan 8 foto sekali unggah. Rasio persegi paling
-                optimal.</p>
+                WEBP. Maksimal 2 MB per foto dan 8 foto sekali unggah.</p>
+
+            <label class="mt-4 block text-xs font-bold text-stone-600">Penyesuaian tampilan foto
+                <select name="image_fit" x-model="imageFit" class="mt-2 block w-full rounded-xl border-stone-200 text-sm sm:max-w-xs">
+                    <option value="contain">Tampilkan utuh (tanpa terpotong)</option>
+                    <option value="cover">Penuhi bingkai (pinggir bisa terpotong)</option>
+                </select>
+            </label>
+            <p class="mt-1 text-[11px] font-semibold text-stone-400">Pilihan ini berlaku untuk semua foto produk. Lihat hasilnya pada preview di bawah.</p>
+            @error('image_fit')
+                <p class="mt-1 text-xs font-bold text-red-600">{{ $message }}</p>
+            @enderror
 
             <div
                  class="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4"
@@ -354,7 +365,7 @@
                     <label
                            class="group relative block aspect-square cursor-pointer overflow-hidden rounded-2xl border border-amber-200 bg-white shadow-sm">
                         <img src="{{ $product->image_url }}" alt="Foto utama {{ $product->name }}"
-                             class="h-full w-full object-cover">
+                             class="h-full w-full bg-white" :class="imageFit === 'contain' ? 'object-contain' : 'object-cover'">
                         <span
                               class="absolute left-2 top-2 rounded-full bg-amber-500 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-white shadow-sm">Utama</span>
                         <input type="checkbox" name="remove_image" value="1" class="peer sr-only">
@@ -367,7 +378,7 @@
                     <label
                            class="group relative block aspect-square cursor-pointer overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
                         <img src="{{ $image->url }}" alt="Foto tambahan {{ $product->name }}"
-                             class="h-full w-full object-cover">
+                             class="h-full w-full bg-white" :class="imageFit === 'contain' ? 'object-contain' : 'object-cover'">
                         <input type="checkbox" name="removed_images[]" value="{{ $image->id }}"
                                class="peer sr-only">
                         <span
@@ -379,7 +390,7 @@
                     <div
                          class="group relative aspect-square overflow-hidden rounded-2xl border border-amber-200 bg-white shadow-sm">
                         <img :src="preview.url" :alt="preview.name"
-                             class="h-full w-full object-cover">
+                             class="h-full w-full bg-white" :class="imageFit === 'contain' ? 'object-contain' : 'object-cover'">
                         <span
                               class="absolute left-2 top-2 rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-extrabold uppercase tracking-wide text-white shadow-sm">Baru</span>
                         <button type="button" @click="removeFile(index)"
