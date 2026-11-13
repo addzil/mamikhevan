@@ -43,6 +43,7 @@ deployment:
     - /bin/cp "$APP_ROOT/public/favicon.ico" "$APP_ROOT/public/robots.txt" "$PUBLIC_ROOT/"
     - /bin/rm -f "$APP_ROOT/bootstrap/cache/packages.php" "$APP_ROOT/bootstrap/cache/services.php"
     - cd "$APP_ROOT" && "$PHP_BIN" artisan config:clear --no-ansi
+    - cd "$APP_ROOT" && "$PHP_BIN" artisan route:clear --no-ansi
     - cd "$APP_ROOT" && "$PHP_BIN" artisan package:discover --no-ansi
     - cd "$APP_ROOT" && "$PHP_BIN" artisan migrate --force
     - cd "$APP_ROOT" && "$PHP_BIN" artisan db:seed --class=AdminUserSeeder --force
