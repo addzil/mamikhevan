@@ -9,7 +9,7 @@ deployment:
     - cd "$APP_ROOT" && test -f .env || { echo "Missing production .env in $APP_ROOT" >&2; exit 1; }
     - cd "$APP_ROOT" && grep -Eq '^APP_ENV=production[[:space:]]*$' .env || { echo "Set APP_ENV=production in $APP_ROOT/.env" >&2; exit 1; }
     - cd "$APP_ROOT" && grep -Eq '^APP_DEBUG=false[[:space:]]*$' .env || { echo "Set APP_DEBUG=false in $APP_ROOT/.env" >&2; exit 1; }
-    - cd "$APP_ROOT" && grep -Eq '^APP_URL=https://[^[:space:]]+[[:space:]]*$' .env || { echo "Set APP_URL to the production HTTPS URL in $APP_ROOT/.env" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq "^[[:space:]]*APP_URL[[:space:]]*=[[:space:]]*(https://[^[:space:]\"']+|\"https://[^[:space:]\"']+\"|'https://[^[:space:]\"']+')[[:space:]]*$" .env || { echo "Set APP_URL to an HTTPS URL in $APP_ROOT/.env (quoted or unquoted, for example APP_URL=https://shop.example.com)" >&2; exit 1; }
     - cd "$APP_ROOT" && grep -Eq '^APP_KEY=[^[:space:]]+[[:space:]]*$' .env || { echo "Set a nonempty APP_KEY in $APP_ROOT/.env" >&2; exit 1; }
     - cd "$APP_ROOT" && grep -Eq '^DB_CONNECTION=mysql[[:space:]]*$' .env || { echo "Set DB_CONNECTION=mysql in $APP_ROOT/.env" >&2; exit 1; }
     - cd "$APP_ROOT" && grep -Eq '^SESSION_SECURE_COOKIE=true[[:space:]]*$' .env || { echo "Set SESSION_SECURE_COOKIE=true in $APP_ROOT/.env" >&2; exit 1; }
