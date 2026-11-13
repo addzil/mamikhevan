@@ -24,13 +24,39 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Storage;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 Route::get('/storage/{path}', function (string $path) {
-    abort_unless(Storage::disk('public')->exists($path), 404);
+    $relativePath = str_replace('\\', '/', ltrim($path, '/'));
+    $pathSegments = explode('/', $relativePath);
 
-    return Storage::disk('public')->response($path);
+    abort_if(in_array('..', $pathSegments, true) || in_array('.', $pathSegments, true), 404);
+
+    $storageRoots = [
+        storage_path('app/public'),
+        public_path('storage'),
+        dirname(base_path()).'/storage',
+    ];
+
+    foreach ($storageRoots as $storageRoot) {
+        $canonicalRoot = realpath($storageRoot);
+
+        if ($canonicalRoot === false) {
+            continue;
+        }
+
+        $candidatePath = realpath($canonicalRoot.DIRECTORY_SEPARATOR.str_replace('/', DIRECTORY_SEPARATOR, $relativePath));
+
+        if (
+            $candidatePath !== false
+            && is_file($candidatePath)
+            && str_starts_with($candidatePath, $canonicalRoot.DIRECTORY_SEPARATOR)
+        ) {
+            return response()->file($candidatePath);
+        }
+    }
+
+    abort(404);
 })->where('path', '.*')->name('storage.public');
 
 Route::get('/katalog', [ProductController::class, 'index'])->name('products.index');
