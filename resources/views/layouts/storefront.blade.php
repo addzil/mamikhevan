@@ -27,6 +27,13 @@
     <meta name="theme-color" content="#F59E0B">
     <meta name="description" content="@yield('meta_description', 'Mamikhevanshop adalah katalog pakaian anak dengan bahan lembut, desain lucu, dan harga bersahabat. Belanja online dengan COD atau transfer.')">
 
+    <script async src="https://www.googletagmanager.com/gtm.js?id=GTM-PKLJ6ZDB"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+    </script>
+
     <title>@yield('title', 'Mamikhevanshop — Pakaian Anak Lucu &amp; Nyaman')</title>
 
     <link rel="icon"
