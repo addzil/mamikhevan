@@ -36,6 +36,8 @@ deployment:
     - cd "$APP_ROOT" && test -f vendor/autoload.php || { echo "Missing prebuilt vendor/autoload.php in $APP_ROOT; extract the runtime ZIP first" >&2; exit 1; }
     - cd "$APP_ROOT" && test -f public/build/manifest.json || { echo "Missing prebuilt public/build/manifest.json in $APP_ROOT; extract the runtime ZIP first" >&2; exit 1; }
     - /bin/mkdir -p "$PUBLIC_ROOT/build" "$PUBLIC_ROOT/images"
+    - if [ -e "$PUBLIC_ROOT/storage" ] && [ ! -L "$PUBLIC_ROOT/storage" ]; then echo "Move the existing domain-root storage directory before deployment" >&2; exit 1; fi
+    - /bin/ln -sfn "$APP_ROOT/storage/app/public" "$PUBLIC_ROOT/storage"
     - /bin/cp -R "$APP_ROOT/public/build/." "$PUBLIC_ROOT/build/"
     - /bin/cp -R "$APP_ROOT/public/images/." "$PUBLIC_ROOT/images/"
     - /bin/cp "$APP_ROOT/public/favicon.ico" "$APP_ROOT/public/robots.txt" "$PUBLIC_ROOT/"
