@@ -19,12 +19,36 @@
             margin: 2mm;
         }
 
+        .label-header,
+        .label-codes,
+        .label-footer {
+            padding: 2mm 3mm !important;
+        }
+
+        .label-courier > div,
+        .label-addresses > div,
+        .label-items {
+            padding: 2mm 3mm !important;
+        }
+
+        .label-summary > div {
+            padding: 1.5mm 1mm !important;
+        }
+
+        .label-footer .signature-line {
+            margin-top: 3mm !important;
+        }
+
         @media print {
             html,
             body {
                 background: #fff !important;
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
+            }
+
+            main {
+                padding: 0 !important;
             }
 
             .no-print {
@@ -37,6 +61,7 @@
                 border: 0 !important;
                 border-radius: 0 !important;
                 box-shadow: none !important;
+                break-inside: avoid;
             }
 
             .avoid-break {
@@ -49,10 +74,30 @@
 @push('scripts')
     <script>
         function setLabelPaper(size) {
-            const [width, height] = size.split('x');
+            const [width, height] = size.split('x').map(Number);
+            const sheet = document.querySelector('.print-sheet');
+            const contentWidth = `${width - 4}mm`;
+
             document.getElementById('label-page-size').textContent = `@page { size: ${width}mm ${height}mm; margin: 2mm; }`;
-            document.querySelector('.print-sheet').style.maxWidth = `calc(${width}mm - 4mm)`;
+            sheet.style.width = contentWidth;
+            sheet.style.maxWidth = contentWidth;
+            sheet.style.zoom = '1';
+
+            const ruler = document.createElement('div');
+            ruler.style.cssText = 'position:absolute;visibility:hidden;height:100mm;';
+            document.body.appendChild(ruler);
+
+            const pixelsPerMm = ruler.getBoundingClientRect().height / 100;
+            const availableHeight = (height - 8) * pixelsPerMm;
+            const sheetHeight = sheet.getBoundingClientRect().height;
+
+            ruler.remove();
+            sheet.style.zoom = String(Math.min(1, availableHeight / sheetHeight));
         }
+
+        window.addEventListener('beforeprint', () => {
+            setLabelPaper(document.getElementById('label-paper').value);
+        });
     </script>
 @endpush
 
@@ -70,7 +115,7 @@
         </select>
     </div>
     <div class="print-sheet mx-auto w-full max-w-[96mm] overflow-hidden rounded-2xl border border-stone-200 bg-white shadow-sm">
-        <header class="flex items-start justify-between gap-4 border-b-2 border-stone-900 px-6 py-5">
+        <header class="label-header flex items-start justify-between gap-4 border-b-2 border-stone-900 px-6 py-5">
             <div>
                 <p class="text-[10px] font-extrabold uppercase tracking-[0.25em] text-stone-400">Label pengiriman</p>
                 <h1 class="mt-1 font-display text-2xl font-extrabold leading-none text-stone-900">{{ config('shop.store.name') }}</h1>
@@ -84,7 +129,7 @@
             </div>
         </header>
 
-        <div class="grid grid-cols-[1fr_auto] items-stretch border-b border-stone-200">
+        <div class="label-courier grid grid-cols-[1fr_auto] items-stretch border-b border-stone-200">
             <div class="px-6 py-4">
                 <p class="text-[10px] font-extrabold uppercase tracking-wider text-stone-400">Ekspedisi</p>
                 <p class="mt-1 text-lg font-extrabold text-stone-900">{{ $order->shippingLabel() }}</p>
@@ -97,7 +142,7 @@
             </div>
         </div>
 
-        <div class="flex items-center justify-between gap-4 border-b border-stone-200 bg-stone-50 px-6 py-4">
+        <div class="label-codes flex items-center justify-between gap-4 border-b border-stone-200 bg-stone-50 px-6 py-4">
             <div>
                 <p class="text-[10px] font-extrabold uppercase tracking-wider text-stone-400">Nomor resi</p>
                 <p class="mt-1 font-mono text-xl font-extrabold tracking-wider text-stone-900">{{ $order->shipping_tracking_number ?: '________________' }}</p>
@@ -108,7 +153,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-2 border-b border-stone-200">
+        <div class="label-addresses grid grid-cols-2 border-b border-stone-200">
             <div class="border-r border-stone-200 px-6 py-4">
                 <p class="text-[10px] font-extrabold uppercase tracking-wider text-stone-400">Pengirim</p>
                 <p class="mt-2 text-sm font-extrabold text-stone-900">{{ config('shop.store.name') }}</p>
@@ -131,7 +176,7 @@
             </div>
         </div>
 
-        <div class="grid grid-cols-4 divide-x divide-stone-200 border-b border-stone-200 text-center">
+        <div class="label-summary grid grid-cols-4 divide-x divide-stone-200 border-b border-stone-200 text-center">
             <div class="px-2 py-3">
                 <p class="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">Pembayaran</p>
                 <p class="mt-1 text-[11px] font-extrabold text-stone-800">{{ $isCod ? 'COD' : 'Transfer' }}</p>
@@ -150,7 +195,7 @@
             </div>
         </div>
 
-        <div class="avoid-break px-6 py-4">
+        <div class="label-items avoid-break px-6 py-4">
             <p class="text-[10px] font-extrabold uppercase tracking-wider text-stone-400">Isi paket</p>
             <ul class="mt-2 divide-y divide-stone-100">
                 @foreach ($order->items as $item)
@@ -170,7 +215,7 @@
             </ul>
         </div>
 
-        <footer class="grid grid-cols-[1fr_auto] items-end gap-6 border-t border-stone-200 bg-stone-50 px-6 py-4">
+        <footer class="label-footer grid grid-cols-[1fr_auto] items-end gap-6 border-t border-stone-200 bg-stone-50 px-6 py-4">
             <div>
                 <p class="text-[9px] font-extrabold uppercase tracking-wider text-stone-400">Catatan pengiriman</p>
                 <p class="mt-1 text-[10px] font-semibold leading-4 text-stone-500">
@@ -180,11 +225,11 @@
             <div class="flex items-end gap-6">
                 <div class="text-center">
                     <p class="text-[9px] font-bold text-stone-400">Disiapkan oleh</p>
-                    <div class="mt-6 w-20 border-t border-stone-400"></div>
+                    <div class="signature-line mt-6 w-20 border-t border-stone-400"></div>
                 </div>
                 <div class="text-center">
                     <p class="text-[9px] font-bold text-stone-400">Kurir</p>
-                    <div class="mt-6 w-20 border-t border-stone-400"></div>
+                    <div class="signature-line mt-6 w-20 border-t border-stone-400"></div>
                 </div>
             </div>
         </footer>
