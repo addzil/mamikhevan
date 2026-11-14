@@ -52,6 +52,87 @@ class StorefrontTest extends TestCase
                 && ! $products->contains($inactiveSaleProduct));
     }
 
+    public function test_home_product_sections_sort_by_recency_and_discount_with_out_of_stock_last(): void
+    {
+        [$newest, $largestDiscount, $outOfStock, $oldest, $olderInStock] = Product::query()->orderBy('id')->take(5)->get()->all();
+        Product::query()->update(['is_active' => false]);
+
+        $newest->refresh()->update(['is_active' => true, 'sizes' => null, 'size_stocks' => null, 'stock' => 5, 'price' => 80000, 'compare_price' => 100000]);
+        $largestDiscount->refresh()->update(['is_active' => true, 'sizes' => null, 'size_stocks' => null, 'stock' => 5, 'price' => 80000, 'compare_price' => 120000]);
+        $outOfStock->refresh()->update(['is_active' => true, 'sizes' => ['M'], 'size_stocks' => ['M' => 0], 'stock' => 5, 'price' => 80000, 'compare_price' => 200000]);
+        $oldest->refresh()->update(['is_active' => true, 'sizes' => null, 'size_stocks' => null, 'stock' => 5, 'price' => 80000, 'compare_price' => null]);
+        $olderInStock->refresh()->update(['is_active' => true, 'sizes' => null, 'size_stocks' => null, 'stock' => 5, 'price' => 80000, 'compare_price' => null]);
+
+        foreach ([$newest, $largestDiscount, $outOfStock, $oldest, $olderInStock] as $index => $product) {
+            $product->created_at = now()->subDays([1, 2, 0, 3, 4][$index]);
+            $product->save();
+        }
+
+        $response = $this->get(route('home'))->assertOk();
+
+        $this->assertSame(
+            [$newest->id, $largestDiscount->id, $oldest->id, $olderInStock->id],
+            $response->viewData('newestProducts')->pluck('id')->values()->all()
+        );
+        $this->assertSame(
+            [$largestDiscount->id, $newest->id, $outOfStock->id],
+            $response->viewData('saleProducts')->pluck('id')->values()->all()
+        );
+    }
+
+    public function test_favorite_products_sort_by_sold_units_excluding_cancelled_orders_and_gifts(): void
+    {
+        [$mostSold, $fewerSold, $outOfStock] = Product::query()->orderBy('id')->take(3)->get()->all();
+        Product::query()->update(['is_active' => false]);
+        Order::query()->delete();
+
+        foreach ([$mostSold, $fewerSold, $outOfStock] as $product) {
+            $product->refresh()->update(['is_active' => true, 'is_featured' => true, 'sizes' => null, 'size_stocks' => null, 'stock' => $product->is($outOfStock) ? 0 : 5]);
+        }
+
+        $addOrder = function (Product $product, int $quantity, string $status, int $giftQuantity = 0): void {
+            $order = Order::create([
+                'customer_name' => 'Pembeli',
+                'customer_phone' => '081234567890',
+                'customer_address' => 'Jalan Melati 1',
+                'payment_method' => Order::PAYMENT_COD,
+                'subtotal' => $product->price * $quantity,
+                'total' => $product->price * $quantity,
+                'status' => $status,
+            ]);
+            $order->items()->create([
+                'product_id' => $product->id,
+                'product_name' => $product->name,
+                'price' => $product->price,
+                'quantity' => $quantity,
+                'subtotal' => $product->price * $quantity,
+            ]);
+
+            if ($giftQuantity > 0) {
+                $order->items()->create([
+                    'product_id' => $product->id,
+                    'product_name' => $product->name,
+                    'price' => 0,
+                    'quantity' => $giftQuantity,
+                    'subtotal' => 0,
+                    'is_promo_gift' => true,
+                ]);
+            }
+        };
+
+        $addOrder($mostSold, 3, Order::STATUS_COMPLETED);
+        $addOrder($fewerSold, 2, Order::STATUS_COMPLETED, 8);
+        $addOrder($fewerSold, 10, Order::STATUS_CANCELLED);
+        $addOrder($outOfStock, 10, Order::STATUS_COMPLETED);
+
+        $response = $this->get(route('home'))->assertOk();
+
+        $this->assertSame(
+            [$mostSold->id, $fewerSold->id, $outOfStock->id],
+            $response->viewData('featuredProducts')->pluck('id')->values()->all()
+        );
+    }
+
     public function test_catalog_page_renders(): void
     {
         $this->get(route('products.index'))
