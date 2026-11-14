@@ -20,6 +20,8 @@ deployment:
     - cd "$APP_ROOT" && grep -Eq '^MAIL_USERNAME=.+$' .env || { echo "Configure MAIL_USERNAME in $APP_ROOT/.env" >&2; exit 1; }
     - cd "$APP_ROOT" && grep -Eq '^MAIL_PASSWORD=.+$' .env || { echo "Configure MAIL_PASSWORD in $APP_ROOT/.env" >&2; exit 1; }
     - cd "$APP_ROOT" && grep -Eq '^MAIL_FROM_ADDRESS=.+$' .env || { echo "Configure MAIL_FROM_ADDRESS in $APP_ROOT/.env" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^KOMERCE_SHIPPING_COST_KEY=[^[:space:]]+[[:space:]]*$' .env || { echo "Set a nonempty KOMERCE_SHIPPING_COST_KEY in $APP_ROOT/.env for checkout shipping rates" >&2; exit 1; }
+    - cd "$APP_ROOT" && grep -Eq '^KOMERCE_ORIGIN_ID=[1-9][0-9]*[[:space:]]*$' .env || { echo "Set KOMERCE_ORIGIN_ID to a positive origin ID in $APP_ROOT/.env for checkout shipping rates" >&2; exit 1; }
     - if [ "$REPO_ROOT" != "$APP_ROOT" ]; then for d in app config resources routes; do /bin/mkdir -p "$APP_ROOT/$d"; /bin/cp -R "$REPO_ROOT/$d/." "$APP_ROOT/$d/"; done; fi
     - /bin/mkdir -p "$APP_ROOT/bootstrap/cache" "$APP_ROOT/database" "$APP_ROOT/public" "$APP_ROOT/storage/app/public" "$APP_ROOT/storage/framework/cache" "$APP_ROOT/storage/framework/sessions" "$APP_ROOT/storage/framework/views" "$APP_ROOT/storage/logs"
     - if [ "$REPO_ROOT" != "$APP_ROOT" ]; then /bin/cp "$REPO_ROOT/bootstrap/app.php" "$REPO_ROOT/bootstrap/providers.php" "$APP_ROOT/bootstrap/"; fi

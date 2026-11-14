@@ -296,7 +296,7 @@
                             <button type="button" @click="applyVoucher()" class="rounded-xl border border-amber-200 bg-white px-3 text-xs font-extrabold text-amber-700 hover:bg-amber-50">Terapkan</button>
                         </div>
                         <p x-show="voucherError" x-text="voucherError" class="mt-1.5 text-[11px] font-bold text-red-600"></p>
-                        <p x-show="!voucherError && selectedOption?.promotion?.voucher_code" class="mt-1.5 text-[11px] font-bold text-emerald-700" x-text="'Voucher ' + selectedOption.promotion.voucher_code + ' diterapkan.'"></p>
+                        <p x-show="!voucherError && selectedOption?.promotion?.voucher_code" class="mt-1.5 text-[11px] font-bold text-emerald-700" x-text="selectedOption?.promotion?.voucher_code ? 'Voucher ' + selectedOption.promotion.voucher_code + ' diterapkan.' : ''"></p>
                     </div>
 
                     <dl class="mt-5 space-y-3 border-t border-dashed border-yellow-200 pt-5 text-sm">
