@@ -49,6 +49,7 @@
 
             main {
                 padding: 0 !important;
+                width: 100% !important;
             }
 
             .no-print {
@@ -57,7 +58,7 @@
 
             .print-sheet {
                 max-width: none !important;
-                margin: 0 !important;
+                margin: 0 auto !important;
                 border: 0 !important;
                 border-radius: 0 !important;
                 box-shadow: none !important;
