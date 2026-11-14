@@ -112,7 +112,7 @@ class Order extends Model
     {
         static::creating(function (self $order) {
             if (blank($order->code)) {
-                $order->code = 'KK-'.now()->format('ymd').'-'.strtoupper(Str::random(5));
+                $order->code = 'KK-'.now('Asia/Jakarta')->format('ymd').'-'.strtoupper(Str::random(5));
             }
         });
     }

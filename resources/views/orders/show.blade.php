@@ -26,7 +26,7 @@
             <div>
                 <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-amber-400">Terima kasih sudah belanja</p>
                 <h1 class="mt-2 font-display text-3xl font-extrabold text-stone-900 sm:text-4xl">Pesanan {{ $order->code }}</h1>
-                <p class="mt-2 text-sm text-stone-500">Dibuat {{ $order->created_at->translatedFormat('d F Y, H:i') }} WIB</p>
+                <p class="mt-2 text-sm text-stone-500">Dibuat {{ $order->created_at->timezone('Asia/Jakarta')->translatedFormat('d F Y, H:i') }} WIB</p>
             </div>
             <span class="inline-flex w-fit items-center gap-2 rounded-full px-4 py-2 text-xs font-extrabold ring-1 {{ $order->statusColor() }}">
                 {{ $order->statusLabel() }}
@@ -110,7 +110,7 @@
                     </div>
                 @endif
                 @if ($order->delivered_at)
-                    <p class="mt-4 text-center text-xs font-semibold text-emerald-600">Dikonfirmasi diterima pada {{ $order->delivered_at->translatedFormat('d F Y, H:i') }} WIB</p>
+                    <p class="mt-4 text-center text-xs font-semibold text-emerald-600">Dikonfirmasi diterima pada {{ $order->delivered_at->timezone('Asia/Jakarta')->translatedFormat('d F Y, H:i') }} WIB</p>
                 @endif
             @endif
         </div>
@@ -308,7 +308,7 @@
                             <div class="mt-5 rounded-2xl border border-amber-100 bg-amber-50 p-4">
                                 <h3 class="text-sm font-extrabold text-stone-800">Sudah transfer?</h3>
                                 @if ($order->payment_proof_path)
-                                    <p class="mt-1 text-xs font-semibold leading-5 text-emerald-700">Bukti pembayaran terkirim {{ $order->payment_proof_uploaded_at?->translatedFormat('d F Y, H:i') }} WIB dan sedang menunggu pemeriksaan admin.</p>
+                                    <p class="mt-1 text-xs font-semibold leading-5 text-emerald-700">Bukti pembayaran terkirim {{ $order->payment_proof_uploaded_at?->timezone('Asia/Jakarta')->translatedFormat('d F Y, H:i') }} WIB dan sedang menunggu pemeriksaan admin.</p>
                                 @else
                                     <p class="mt-1 text-xs font-semibold leading-5 text-stone-500">Kirim bukti pembayaran untuk diperiksa admin. Pesanan akan tetap menunggu konfirmasi sampai pembayaran diperiksa.</p>
                                 @endif
@@ -322,7 +322,7 @@
                                 </form>
                             </div>
                         @elseif ($order->payment_proof_path)
-                            <p class="mt-4 rounded-xl bg-emerald-50 p-3 text-xs font-semibold leading-5 text-emerald-700">Bukti pembayaran sudah dikirim pada {{ $order->payment_proof_uploaded_at?->translatedFormat('d F Y, H:i') }} WIB.</p>
+                            <p class="mt-4 rounded-xl bg-emerald-50 p-3 text-xs font-semibold leading-5 text-emerald-700">Bukti pembayaran sudah dikirim pada {{ $order->payment_proof_uploaded_at?->timezone('Asia/Jakarta')->translatedFormat('d F Y, H:i') }} WIB.</p>
                         @endif
                     @endif
                 </div>

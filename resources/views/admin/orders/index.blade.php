@@ -86,7 +86,7 @@
                             <td class="whitespace-nowrap px-5 py-4">
                                 <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-extrabold ring-1 {{ $order->statusColor() }}">{{ $order->statusLabel() }}</span>
                             </td>
-                            <td class="whitespace-nowrap px-5 py-4 text-xs font-semibold text-stone-400">{{ $order->created_at->format('d/m/Y') }}</td>
+                            <td class="whitespace-nowrap px-5 py-4 text-xs font-semibold text-stone-400">{{ $order->created_at->timezone('Asia/Jakarta')->format('d/m/Y') }}</td>
                             <td class="px-5 py-4 text-right">
                                 <div class="inline-flex items-center gap-1.5">
                                     <a href="{{ route('admin.orders.shipping-label', $order) }}" target="_blank" rel="noopener" class="inline-flex rounded-lg border border-stone-200 px-2.5 py-1.5 text-[11px] font-extrabold text-stone-600 transition hover:border-amber-200 hover:text-yellow-700">Resi</a>

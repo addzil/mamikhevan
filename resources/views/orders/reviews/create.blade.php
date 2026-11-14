@@ -18,7 +18,7 @@
             <p class="mt-2 text-sm text-stone-500">
                 Pesanan <span class="font-extrabold text-stone-700">{{ $order->code }}</span>
                 @if ($order->delivered_at)
-                    &middot; diterima {{ $order->delivered_at->translatedFormat('d F Y') }}
+                    &middot; diterima {{ $order->delivered_at->timezone('Asia/Jakarta')->translatedFormat('d F Y') }}
                 @endif
             </p>
         </div>

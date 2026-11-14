@@ -9,6 +9,7 @@
         : number_format($weightGrams, 0, ',', '.').' g';
     $itemCount = $order->items->sum('quantity');
     $isCod = $order->payment_method === \App\Models\Order::PAYMENT_COD;
+    $printedAt = now('Asia/Jakarta');
 @endphp
 
 @push('styles')
@@ -78,8 +79,8 @@
             </div>
             <div class="text-right">
                 <p class="text-[10px] font-extrabold uppercase tracking-wider text-stone-400">Tanggal cetak</p>
-                <p class="mt-1 text-xs font-extrabold text-stone-800">{{ now()->format('d M Y') }}</p>
-                <p class="text-[10px] font-semibold text-stone-400">{{ now()->format('H:i') }} WIB</p>
+                <p class="mt-1 text-xs font-extrabold text-stone-800">{{ $printedAt->format('d M Y') }}</p>
+                <p class="text-[10px] font-semibold text-stone-400">{{ $printedAt->format('H:i') }} WIB</p>
             </div>
         </header>
 

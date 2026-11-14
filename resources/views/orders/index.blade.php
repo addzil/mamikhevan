@@ -18,7 +18,7 @@
                     <div class="flex flex-wrap items-center justify-between gap-3">
                         <div>
                             <p class="font-extrabold text-stone-900">{{ $order->code }}</p>
-                            <p class="mt-1 text-xs text-stone-500">{{ $order->created_at->translatedFormat('d F Y, H:i') }}</p>
+                            <p class="mt-1 text-xs text-stone-500">{{ $order->created_at->timezone('Asia/Jakarta')->translatedFormat('d F Y, H:i') }} WIB</p>
                         </div>
                         <span class="rounded-full px-3 py-1 text-xs font-bold ring-1 {{ $order->statusColor() }}">{{ $order->statusLabel() }}</span>
                     </div>

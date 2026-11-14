@@ -42,7 +42,7 @@ class PaymentProofUploadedAdminNotification extends Notification implements Shou
             $message->line($item->quantity.' x '.$item->productDisplayName().' — '.$amount);
         }
 
-        $message->line('Bukti diunggah: '.$this->order->payment_proof_uploaded_at?->format('d/m/Y H:i').' WIB')
+        $message->line('Bukti diunggah: '.$this->order->payment_proof_uploaded_at?->timezone('Asia/Jakarta')->format('d/m/Y H:i').' WIB')
             ->line('Periksa bukti dan pastikan dana telah diterima sebelum mengonfirmasi pesanan.');
 
         return $message->action('Lihat pesanan dan bukti pembayaran', route('admin.orders.show', $this->order));

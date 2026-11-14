@@ -2,7 +2,7 @@
 
 @section('title', 'Pesan dari '.$message->name)
 @section('heading', 'Detail pesan')
-@section('subheading', 'Diterima '.$message->created_at->format('d/m/Y H:i').' WIB')
+@section('subheading', 'Diterima '.$message->created_at->timezone('Asia/Jakarta')->format('d/m/Y H:i').' WIB')
 
 @section('content')
     <div class="mx-auto max-w-4xl">
@@ -41,7 +41,7 @@
                             <span class="h-1.5 w-1.5 rounded-full bg-sky-500"></span> Sudah dibalas
                         </span>
                     @endif
-                    <span class="text-[11px] font-semibold text-stone-400">{{ $message->created_at->format('d/m/Y H:i') }}</span>
+                    <span class="text-[11px] font-semibold text-stone-400">{{ $message->created_at->timezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</span>
                 </div>
             </div>
 
@@ -89,7 +89,7 @@
                     </p>
                 </div>
                 @if ($message->replied_at)
-                    <p class="text-[11px] font-semibold text-sky-600">Terakhir dibalas {{ $message->replied_at->format('d/m/Y H:i') }} WIB</p>
+                    <p class="text-[11px] font-semibold text-sky-600">Terakhir dibalas {{ $message->replied_at->timezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</p>
                 @endif
             </div>
 

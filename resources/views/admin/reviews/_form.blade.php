@@ -54,7 +54,7 @@
 
     <div>
         <label for="reviewed_at" class="text-xs font-extrabold uppercase tracking-wider text-stone-500">Tanggal ulasan</label>
-        <input id="reviewed_at" type="date" name="reviewed_at" value="{{ old('reviewed_at', optional($review?->reviewed_at)->format('Y-m-d') ?? now()->format('Y-m-d')) }}"
+        <input id="reviewed_at" type="date" name="reviewed_at" value="{{ old('reviewed_at', optional($review?->reviewed_at)->timezone('Asia/Jakarta')->format('Y-m-d') ?? now('Asia/Jakarta')->format('Y-m-d')) }}"
                class="mt-2 w-full rounded-xl border-stone-200 py-2.5 text-sm focus:border-amber-300 focus:ring-amber-200">
         @error('reviewed_at') <p class="mt-1.5 text-xs font-bold text-yellow-700">{{ $message }}</p> @enderror
     </div>

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Notifications\PaymentProofUploadedAdminNotification;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\URL;
@@ -135,6 +136,47 @@ class OrderAccessTest extends TestCase
             ->assertOk()
             ->assertSee($ownOrder->code)
             ->assertDontSee($otherOrder->code);
+    }
+
+    public function test_order_and_shipping_label_show_jakarta_time(): void
+    {
+        $this->travelTo(Carbon::parse('2026-11-14 07:23:00', 'UTC'));
+
+        $buyer = User::factory()->create();
+        $admin = User::factory()->create(['role' => User::ROLE_ADMINISTRATOR]);
+        $order = $this->createOrder($buyer);
+        $order->update([
+            'payment_proof_uploaded_at' => now(),
+            'delivered_at' => now(),
+        ]);
+
+        $this->assertSame('2026-11-14 07:23:00', $order->fresh()->created_at->format('Y-m-d H:i:s'));
+
+        $this->actingAs($buyer)->get(route('orders.index'))
+            ->assertOk()
+            ->assertSee('14:23 WIB');
+        $this->get(route('orders.show', $order))
+            ->assertOk()
+            ->assertSee('14:23 WIB');
+
+        $this->actingAs($admin)->get(route('admin.orders.show', $order))
+            ->assertOk()
+            ->assertSee('14/11/2026 14:23 WIB');
+        $this->get(route('admin.orders.shipping-label', $order))
+            ->assertOk()
+            ->assertSee('14:23 WIB');
+
+        $mailLines = (new PaymentProofUploadedAdminNotification($order->fresh()))->toMail($admin)->introLines;
+        $this->assertContains('Bukti diunggah: 14/11/2026 14:23 WIB', $mailLines);
+    }
+
+    public function test_order_code_uses_jakarta_date_at_utc_day_boundary(): void
+    {
+        $this->travelTo(Carbon::parse('2026-11-14 18:23:00', 'UTC'));
+
+        $order = $this->createOrder();
+
+        $this->assertStringStartsWith('KK-261115-', $order->code);
     }
 
     public function test_customer_can_upload_payment_proof_and_only_admin_can_view_it(): void

@@ -2,7 +2,7 @@
 
 @section('title', 'Pesanan '.$order->code)
 @section('heading', 'Detail pesanan')
-@section('subheading', 'Kode '.$order->code.' · '.$order->created_at->format('d/m/Y H:i').' WIB')
+@section('subheading', 'Kode '.$order->code.' · '.$order->created_at->timezone('Asia/Jakarta')->format('d/m/Y H:i').' WIB')
 
 @section('content')
     <div class="flex flex-col justify-between gap-3 sm:flex-row sm:items-center">
@@ -247,7 +247,7 @@
                 @if ($order->payment_proof_path)
                     <div class="mt-4 rounded-2xl border border-emerald-100 bg-emerald-50 p-4">
                         <p class="text-xs font-extrabold text-emerald-800">Bukti pembayaran pelanggan</p>
-                        <p class="mt-1 text-[11px] font-semibold text-emerald-700">Dikirim {{ $order->payment_proof_uploaded_at?->translatedFormat('d F Y, H:i') }} WIB. Periksa kecocokan nominal dan rekening sebelum mengonfirmasi pembayaran.</p>
+                        <p class="mt-1 text-[11px] font-semibold text-emerald-700">Dikirim {{ $order->payment_proof_uploaded_at?->timezone('Asia/Jakarta')->translatedFormat('d F Y, H:i') }} WIB. Periksa kecocokan nominal dan rekening sebelum mengonfirmasi pembayaran.</p>
                         <a href="{{ route('admin.orders.payment-proof', $order) }}" target="_blank" rel="noopener noreferrer" class="mt-3 inline-flex w-full justify-center rounded-xl bg-emerald-700 px-4 py-2.5 text-xs font-extrabold text-white transition hover:bg-emerald-800">Lihat bukti pembayaran</a>
                     </div>
                 @elseif ($order->payment_method === 'transfer' && $order->status === \App\Models\Order::STATUS_PENDING)
@@ -262,14 +262,14 @@
                         <span class="h-2 w-2 rounded-full bg-amber-400"></span>
                         <div>
                             <p class="text-xs font-extrabold text-stone-700">Dibuat</p>
-                            <p class="text-[11px] font-semibold text-stone-400">{{ $order->created_at->format('d/m/Y H:i') }} WIB</p>
+                            <p class="text-[11px] font-semibold text-stone-400">{{ $order->created_at->timezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</p>
                         </div>
                     </div>
                     <div class="flex items-center gap-3">
                         <span class="h-2 w-2 rounded-full bg-amber-400"></span>
                         <div>
                             <p class="text-xs font-extrabold text-stone-700">Terakhir diperbarui</p>
-                            <p class="text-[11px] font-semibold text-stone-400">{{ $order->updated_at->format('d/m/Y H:i') }} WIB</p>
+                            <p class="text-[11px] font-semibold text-stone-400">{{ $order->updated_at->timezone('Asia/Jakarta')->format('d/m/Y H:i') }} WIB</p>
                         </div>
                     </div>
                 </div>
