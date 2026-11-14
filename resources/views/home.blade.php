@@ -142,6 +142,25 @@
     <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
         <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
             <div>
+                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-amber-400">Baru mendarat</p>
+                <h2 class="mt-2 font-display text-3xl font-extrabold text-stone-900 sm:text-4xl">Koleksi terbaru</h2>
+            </div>
+            <a href="{{ route('products.index', ['sort' => 'latest']) }}" class="inline-flex items-center gap-2 text-sm font-extrabold text-amber-600 hover:text-yellow-700">
+                Lihat semua
+                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
+            </a>
+        </div>
+
+        <div class="mt-8 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
+            @foreach ($newestProducts as $product)
+                <x-store.product-card :product="$product" />
+            @endforeach
+        </div>
+    </section>
+
+    <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+        <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
+            <div>
                 <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-amber-400">Harga spesial untuk si kecil</p>
                 <h2 class="mt-2 font-display text-3xl font-extrabold text-stone-900 sm:text-4xl">Produk sale</h2>
             </div>
@@ -182,25 +201,6 @@
                     Belum ada produk favorit. Silakan tambahkan dari panel admin.
                 </p>
             @endforelse
-        </div>
-    </section>
-
-    <section class="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-        <div class="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end">
-            <div>
-                <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-amber-400">Baru mendarat</p>
-                <h2 class="mt-2 font-display text-3xl font-extrabold text-stone-900 sm:text-4xl">Koleksi terbaru</h2>
-            </div>
-            <a href="{{ route('products.index', ['sort' => 'latest']) }}" class="inline-flex items-center gap-2 text-sm font-extrabold text-amber-600 hover:text-yellow-700">
-                Lihat semua
-                <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
-            </a>
-        </div>
-
-        <div class="mt-8 grid grid-cols-2 gap-4 sm:gap-5 lg:grid-cols-4">
-            @foreach ($newestProducts as $product)
-                <x-store.product-card :product="$product" />
-            @endforeach
         </div>
     </section>
 
