@@ -26,6 +26,14 @@ class HomeController extends Controller
             ->take(8)
             ->get();
 
+        $saleProducts = Product::query()
+            ->active()
+            ->onSale()
+            ->with('category')
+            ->latest()
+            ->take(8)
+            ->get();
+
         $newestProducts = Product::query()
             ->active()
             ->with('category')
@@ -48,6 +56,6 @@ class HomeController extends Controller
                 ->whereIn('id', collect($hero->cards ?? [])->pluck('product_id')->filter())
                 ->get()->keyBy('id');
 
-        return view('home', compact('categories', 'featuredProducts', 'newestProducts', 'reviews', 'hero', 'heroProducts'));
+        return view('home', compact('categories', 'featuredProducts', 'saleProducts', 'newestProducts', 'reviews', 'hero', 'heroProducts'));
     }
 }

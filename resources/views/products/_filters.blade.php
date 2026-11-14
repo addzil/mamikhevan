@@ -5,6 +5,10 @@
     $currentSort = request('sort', 'latest');
 @endphp
 
+@if ($saleOnly)
+    <input type="hidden" name="sale" value="1">
+@endif
+
 <div>
     <label for="filter-q" class="text-xs font-extrabold uppercase tracking-wider text-stone-400">Cari produk</label>
     <div class="relative mt-2">

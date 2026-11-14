@@ -1,9 +1,9 @@
 @extends('layouts.storefront')
 
 @php
-    $pageTitle = $activeCategory?->name ?? 'Katalog Pakaian Anak';
+    $pageTitle = $activeCategory?->name ?? ($saleOnly ? 'Produk sale' : 'Katalog Pakaian Anak');
     $queryWithoutCategory = request()->except('category', 'page');
-    $hasFilters = $search !== '' || $activeCategory || $gender || $maxPrice > 0;
+    $hasFilters = $search !== '' || $activeCategory || $gender || $maxPrice > 0 || $saleOnly;
 @endphp
 
 @section('title', $pageTitle.' — Mamikhevanshop')
@@ -69,6 +69,14 @@
                             <span class="inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold text-yellow-700">
                                 Cari: &ldquo;{{ $search }}&rdquo;
                                 <a href="{{ route('products.index', request()->except('q', 'page')) }}" class="rounded-full p-0.5 hover:bg-amber-100" aria-label="Hapus pencarian">
+                                    <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
+                                </a>
+                            </span>
+                        @endif
+                        @if ($saleOnly)
+                            <span class="inline-flex items-center gap-2 rounded-full bg-amber-50 px-3 py-1.5 text-xs font-bold text-yellow-700">
+                                Produk sale
+                                <a href="{{ route('products.index', request()->except('sale', 'page')) }}" class="rounded-full p-0.5 hover:bg-amber-100" aria-label="Hapus filter sale">
                                     <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18 18 6M6 6l12 12" /></svg>
                                 </a>
                             </span>

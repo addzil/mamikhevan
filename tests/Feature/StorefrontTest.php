@@ -28,6 +28,30 @@ class StorefrontTest extends TestCase
             ->assertDontSee('Paket hemat');
     }
 
+    public function test_sale_section_and_catalog_show_only_active_discounted_products(): void
+    {
+        [$saleProduct, $regularProduct, $inactiveSaleProduct] = Product::query()->orderBy('id')->take(3)->get()->all();
+
+        $saleProduct->update(['is_active' => true, 'price' => 80000, 'compare_price' => 100000]);
+        $regularProduct->update(['is_active' => true, 'price' => 80000, 'compare_price' => 80000]);
+        $inactiveSaleProduct->update(['is_active' => false, 'price' => 80000, 'compare_price' => 100000]);
+
+        $this->get(route('home'))
+            ->assertOk()
+            ->assertSee('Produk sale')
+            ->assertSee(route('products.index', ['sale' => '1']))
+            ->assertViewHas('saleProducts', fn ($products): bool => $products->contains($saleProduct)
+                && ! $products->contains($regularProduct)
+                && ! $products->contains($inactiveSaleProduct));
+
+        $this->get(route('products.index', ['sale' => '1']))
+            ->assertOk()
+            ->assertSee('name="sale" value="1"', false)
+            ->assertViewHas('products', fn ($products): bool => $products->contains($saleProduct)
+                && ! $products->contains($regularProduct)
+                && ! $products->contains($inactiveSaleProduct));
+    }
+
     public function test_catalog_page_renders(): void
     {
         $this->get(route('products.index'))

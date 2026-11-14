@@ -16,6 +16,7 @@ class ProductController extends Controller
         $gender = $request->query('gender');
         $sort = (string) $request->query('sort', 'latest');
         $maxPrice = (int) $request->query('max_price');
+        $saleOnly = $request->query('sale') === '1';
 
         $gender = in_array($gender, ['uniseks', 'laki-laki', 'perempuan'], true) ? $gender : null;
         $sort = in_array($sort, ['latest', 'price_asc', 'price_desc', 'popular'], true) ? $sort : 'latest';
@@ -35,6 +36,7 @@ class ProductController extends Controller
             })
             ->when($gender, fn ($query) => $query->where('gender', $gender))
             ->when($maxPrice > 0, fn ($query) => $query->where('price', '<=', $maxPrice))
+            ->when($saleOnly, fn ($query) => $query->onSale())
             ->when($sort === 'price_asc', fn ($query) => $query->orderBy('price'))
             ->when($sort === 'price_desc', fn ($query) => $query->orderByDesc('price'))
             ->when($sort === 'popular', fn ($query) => $query->orderByDesc('stock')->orderByDesc('is_featured'))
@@ -59,7 +61,8 @@ class ProductController extends Controller
             'search',
             'gender',
             'sort',
-            'maxPrice'
+            'maxPrice',
+            'saleOnly'
         ));
     }
 
