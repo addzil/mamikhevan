@@ -33,7 +33,7 @@ class SiteLogoTest extends TestCase
         Storage::disk('public')->assertExists($logoPath);
 
         $logoUrl = Storage::disk('public')->url($logoPath);
-        $response = $this->get(route('home'))->assertOk();
+        $response = $this->get(route('home'))->assertOk()->assertSeeText('MamikhevanShop');
         $this->assertSame(3, substr_count($response->getContent(), $logoUrl));
         $this->get(route('admin.dashboard'))->assertOk()->assertSee($logoUrl)->assertSeeText('MamikhevanShop');
         $this->get(route('profile.edit'))->assertOk()->assertSee($logoUrl)->assertSeeText('MamikhevanShop');

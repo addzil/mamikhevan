@@ -71,7 +71,7 @@
                  class="mx-auto flex {{ $siteLogoUrl ? 'h-24' : 'h-20' }} max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
                 <a href="{{ route('home') }}" class="group flex flex-none items-center gap-2.5">
                     @if ($siteLogoUrl)
-                        <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-20 w-auto max-w-[170px] object-contain sm:max-w-[300px]">
+                        <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-16 w-16 flex-none object-contain sm:h-20 sm:w-20">
                     @else
                     <span
                           class="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-400 text-amber-950 shadow-soft transition group-hover:scale-105">
@@ -81,10 +81,10 @@
                                   d="M9 3.75 4.5 6l1.875 4.5L9 9.75V21h6V9.75l2.625.75L19.5 6 15 3.75a3 3 0 0 1-6 0Z" />
                         </svg>
                     </span>
-                    <span
-                          class="font-display text-xl font-bold tracking-tight text-stone-900 2xl:text-2xl">Mamikhevan<span
-                              class="text-amber-600">Shop</span></span>
                     @endif
+                    <span
+                          class="font-display text-sm font-bold leading-tight tracking-tight text-stone-900 sm:text-xl 2xl:text-2xl">Mamikhevan<span
+                              class="block text-amber-600 sm:inline">Shop</span></span>
                 </a>
 
                 <nav class="hidden shrink-0 items-center gap-0.5 whitespace-nowrap xl:flex">
@@ -216,7 +216,7 @@
                 <div>
                     <a href="{{ route('home') }}" class="flex items-center gap-2.5">
                         @if ($siteLogoUrl)
-                            <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-24 w-auto max-w-[320px] object-contain">
+                            <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-24 w-24 flex-none object-contain">
                         @else
                         <span
                               class="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-400 text-amber-950 shadow-soft">
@@ -226,10 +226,10 @@
                                       d="M9 3.75 4.5 6l1.875 4.5L9 9.75V21h6V9.75l2.625.75L19.5 6 15 3.75a3 3 0 0 1-6 0Z" />
                             </svg>
                         </span>
-                        <span
-                              class="font-display text-2xl font-bold text-stone-900">Mamikhevan<span
-                                  class="text-amber-600">Shop</span></span>
                         @endif
+                        <span
+                              class="font-display text-xl font-bold text-stone-900 sm:text-2xl">Mamikhevan<span
+                                  class="text-amber-600">Shop</span></span>
                     </a>
                     <p class="mt-4 max-w-sm text-sm leading-7 text-stone-500">
                         Katalog pakaian anak pilihan dengan bahan lembut, jahitan aman, dan desain
