@@ -1,3 +1,7 @@
+@php
+    $siteLogoPath = \App\Models\SiteSetting::query()->value('logo_path');
+    $siteLogoUrl = $siteLogoPath ? \Illuminate\Support\Facades\Storage::disk('public')->url($siteLogoPath) : null;
+@endphp
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
     <head>
@@ -8,7 +12,7 @@
 
         <title>{{ config('app.name', 'Mamikhevanshop') }}</title>
 
-        <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%95%3C/text%3E%3C/svg%3E">
+        <link rel="icon" href="{{ $siteLogoUrl ?: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%95%3C/text%3E%3C/svg%3E" }}">
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
@@ -25,10 +29,14 @@
         <div class="relative flex min-h-screen flex-col">
             <header class="px-6 py-6">
                 <a href="{{ route('home') }}" class="mx-auto flex w-fit items-center gap-2.5">
+                    @if ($siteLogoUrl)
+                        <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-20 w-auto max-w-[260px] object-contain sm:max-w-[280px]">
+                    @else
                     <span class="grid h-11 w-11 place-items-center rounded-2xl bg-amber-500 text-lg text-white shadow-lg shadow-amber-500/25">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3.75 4.5 6l1.875 4.5L9 9.75V21h6V9.75l2.625.75L19.5 6 15 3.75a3 3 0 0 1-6 0Z" /></svg>
                     </span>
                     <span class="font-display text-2xl font-bold tracking-tight text-stone-900">Mamikhevan<span class="text-amber-600">Shop</span></span>
+                    @endif
                 </a>
             </header>
 

@@ -6,6 +6,7 @@ use App\Models\SiteSetting;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Tests\TestCase;
 
@@ -34,6 +35,10 @@ class SiteLogoTest extends TestCase
         $logoUrl = Storage::disk('public')->url($logoPath);
         $response = $this->get(route('home'))->assertOk();
         $this->assertSame(3, substr_count($response->getContent(), $logoUrl));
+        $this->get(route('admin.dashboard'))->assertOk()->assertSee($logoUrl);
+        $this->get(route('profile.edit'))->assertOk()->assertSee($logoUrl);
+        Auth::logout();
+        $this->get(route('admin.login'))->assertOk()->assertSee($logoUrl);
         $this->get('/storage/'.$logoPath)->assertOk()->assertHeader('Content-Type', 'image/png');
     }
 

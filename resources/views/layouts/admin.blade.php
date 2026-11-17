@@ -126,6 +126,8 @@
         ],
     ];
     $adminNav = array_values(array_filter($adminNav, fn (array $item): bool => in_array(auth()->user()->role, $item['roles'], true)));
+    $siteLogoPath = \App\Models\SiteSetting::query()->value('logo_path');
+    $siteLogoUrl = $siteLogoPath ? \Illuminate\Support\Facades\Storage::disk('public')->url($siteLogoPath) : null;
 @endphp
 <!DOCTYPE html>
 <html lang="id" class="scroll-smooth">
@@ -137,8 +139,7 @@
     <meta name="robots" content="noindex, nofollow">
     <title>@yield('title', 'Admin Panel') — Mamikhevanshop</title>
 
-    <link rel="icon"
-          href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%95%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="{{ $siteLogoUrl ?: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%95%3C/text%3E%3C/svg%3E" }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap"
@@ -157,6 +158,9 @@
         <div
              class="flex h-20 flex-none items-center justify-between gap-2 border-b border-stone-100 px-5">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5">
+                @if ($siteLogoUrl)
+                    <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-14 w-auto max-w-[160px] object-contain lg:max-w-[200px]">
+                @else
                 <span
                       class="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-400 text-amber-950 shadow-soft">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.7"
@@ -173,6 +177,7 @@
                           class="mt-1 block text-[10px] font-extrabold uppercase tracking-[0.2em] text-stone-400">Admin
                         panel</span>
                 </span>
+                @endif
             </a>
             <button type="button" @click="sidebar = false"
                     class="grid h-9 w-9 place-items-center rounded-full text-stone-400 hover:bg-stone-100 lg:hidden"
