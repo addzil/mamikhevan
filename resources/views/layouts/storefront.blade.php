@@ -1,5 +1,7 @@
 @php
     $cartCount = app(\App\Services\CartService::class)->count();
+    $siteLogoPath = \App\Models\SiteSetting::query()->value('logo_path');
+    $siteLogoUrl = $siteLogoPath ? \Illuminate\Support\Facades\Storage::disk('public')->url($siteLogoPath) : null;
     $navLinks = [
         ['label' => 'Beranda', 'route' => 'home'],
         ['label' => 'Katalog', 'route' => 'products.index'],
@@ -36,8 +38,7 @@
 
     <title>@yield('title', 'Mamikhevanshop — Pakaian Anak Lucu &amp; Nyaman')</title>
 
-    <link rel="icon"
-          href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%95%3C/text%3E%3C/svg%3E">
+    <link rel="icon" href="{{ $siteLogoUrl ?: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%91%95%3C/text%3E%3C/svg%3E" }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@600;700;800&family=Nunito:wght@400;500;600;700;800&display=swap"
@@ -69,6 +70,9 @@
             <div
                  class="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
                 <a href="{{ route('home') }}" class="group flex flex-none items-center gap-2.5">
+                    @if ($siteLogoUrl)
+                        <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-11 w-auto max-w-[150px] object-contain sm:max-w-[240px]">
+                    @else
                     <span
                           class="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-400 text-amber-950 shadow-soft transition group-hover:scale-105">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.7"
@@ -80,6 +84,7 @@
                     <span
                           class="font-display text-xl font-bold tracking-tight text-stone-900 2xl:text-2xl">Mamikhevan<span
                               class="text-amber-600">Shop</span></span>
+                    @endif
                 </a>
 
                 <nav class="hidden shrink-0 items-center gap-0.5 whitespace-nowrap xl:flex">
@@ -210,6 +215,9 @@
             <div class="grid gap-10 lg:grid-cols-[1.4fr_1fr_1fr_1.1fr]">
                 <div>
                     <a href="{{ route('home') }}" class="flex items-center gap-2.5">
+                        @if ($siteLogoUrl)
+                            <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-11 w-auto max-w-[240px] object-contain">
+                        @else
                         <span
                               class="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-400 text-amber-950 shadow-soft">
                             <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -221,6 +229,7 @@
                         <span
                               class="font-display text-2xl font-bold text-stone-900">Mamikhevan<span
                                   class="text-amber-600">Shop</span></span>
+                        @endif
                     </a>
                     <p class="mt-4 max-w-sm text-sm leading-7 text-stone-500">
                         Katalog pakaian anak pilihan dengan bahan lembut, jahitan aman, dan desain

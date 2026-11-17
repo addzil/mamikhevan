@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\PaymentSettingController as AdminPaymentSettingCo
 use App\Http\Controllers\Admin\ProductController as AdminProductController;
 use App\Http\Controllers\Admin\PromotionController as AdminPromotionController;
 use App\Http\Controllers\Admin\ReviewController as AdminReviewController;
+use App\Http\Controllers\Admin\SiteSettingController;
 use App\Http\Controllers\Admin\SizeGuideController as AdminSizeGuideController;
 use App\Http\Controllers\Admin\StockOpnameController;
 use App\Http\Controllers\Admin\UserController as AdminUserController;
@@ -112,6 +113,8 @@ Route::middleware(['auth', 'admin'])
             Route::resource('promotions', AdminPromotionController::class)->except('show');
             Route::get('payment-settings', [AdminPaymentSettingController::class, 'edit'])->name('payment-settings.edit');
             Route::put('payment-settings', [AdminPaymentSettingController::class, 'update'])->name('payment-settings.update');
+            Route::get('site-settings', [SiteSettingController::class, 'edit'])->name('site-settings.edit');
+            Route::put('site-settings', [SiteSettingController::class, 'update'])->name('site-settings.update');
 
             Route::get('orders', [AdminOrderController::class, 'index'])->name('orders.index');
             Route::get('orders/{order}', [AdminOrderController::class, 'show'])->name('orders.show');

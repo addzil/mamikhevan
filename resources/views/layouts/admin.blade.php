@@ -93,6 +93,14 @@
             'roles' => ['administrator', 'management'],
         ],
         [
+            'label' => 'Logo Toko',
+            'route' => 'admin.site-settings.edit',
+            'active' => 'admin.site-settings.*',
+            'icon' => 'products',
+            'badge' => null,
+            'roles' => ['administrator', 'management'],
+        ],
+        [
             'label' => 'Pesan',
             'route' => 'admin.messages.index',
             'active' => 'admin.messages.*',
