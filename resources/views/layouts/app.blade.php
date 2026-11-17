@@ -24,13 +24,13 @@
             <div class="mx-auto flex max-w-5xl items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
                 <a href="{{ route('home') }}" class="flex items-center gap-2.5">
                     @if ($siteLogoUrl)
-                        <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-12 w-auto max-w-[170px] object-contain sm:max-w-[220px]">
+                        <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-9 w-9 flex-none object-contain">
                     @else
                     <span class="grid h-9 w-9 place-items-center rounded-xl bg-amber-500 text-white shadow-sm shadow-amber-500/25">
                         <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.8" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3.75 4.5 6l1.875 4.5L9 9.75V21h6V9.75l2.625.75L19.5 6 15 3.75a3 3 0 0 1-6 0Z" /></svg>
                     </span>
-                    <span class="font-display text-xl font-bold tracking-tight text-stone-900">Mamikhevan<span class="text-amber-600">Shop</span></span>
                     @endif
+                    <span class="font-display text-xl font-bold tracking-tight text-stone-900">Mamikhevan<span class="text-amber-600">Shop</span></span>
                 </a>
 
                 <div class="flex items-center gap-2">

@@ -159,7 +159,7 @@
              class="flex h-20 flex-none items-center justify-between gap-2 border-b border-stone-100 px-5">
             <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-2.5">
                 @if ($siteLogoUrl)
-                    <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-14 w-auto max-w-[160px] object-contain lg:max-w-[200px]">
+                    <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-10 w-10 flex-none object-contain">
                 @else
                 <span
                       class="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-400 text-amber-950 shadow-soft">
@@ -169,15 +169,15 @@
                               d="M9 3.75 4.5 6l1.875 4.5L9 9.75V21h6V9.75l2.625.75L19.5 6 15 3.75a3 3 0 0 1-6 0Z" />
                     </svg>
                 </span>
+                @endif
                 <span>
                     <span
-                          class="block font-display text-lg font-bold leading-none text-stone-900">Mamikhevan<span
+                          class="block font-display text-sm font-bold leading-none text-stone-900 lg:text-lg">Mamikhevan<span
                               class="text-amber-600">Shop</span></span>
                     <span
                           class="mt-1 block text-[10px] font-extrabold uppercase tracking-[0.2em] text-stone-400">Admin
                         panel</span>
                 </span>
-                @endif
             </a>
             <button type="button" @click="sidebar = false"
                     class="grid h-9 w-9 place-items-center rounded-full text-stone-400 hover:bg-stone-100 lg:hidden"

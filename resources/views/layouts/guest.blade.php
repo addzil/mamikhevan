@@ -30,13 +30,13 @@
             <header class="px-6 py-6">
                 <a href="{{ route('home') }}" class="mx-auto flex w-fit items-center gap-2.5">
                     @if ($siteLogoUrl)
-                        <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-20 w-auto max-w-[260px] object-contain sm:max-w-[280px]">
+                        <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-11 w-11 flex-none object-contain">
                     @else
                     <span class="grid h-11 w-11 place-items-center rounded-2xl bg-amber-500 text-lg text-white shadow-lg shadow-amber-500/25">
                         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.7" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M9 3.75 4.5 6l1.875 4.5L9 9.75V21h6V9.75l2.625.75L19.5 6 15 3.75a3 3 0 0 1-6 0Z" /></svg>
                     </span>
-                    <span class="font-display text-2xl font-bold tracking-tight text-stone-900">Mamikhevan<span class="text-amber-600">Shop</span></span>
                     @endif
+                    <span class="font-display text-2xl font-bold tracking-tight text-stone-900">Mamikhevan<span class="text-amber-600">Shop</span></span>
                 </a>
             </header>
 
