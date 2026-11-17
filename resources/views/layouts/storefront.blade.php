@@ -68,10 +68,10 @@
 
         <div class="border-b border-yellow-100/80 bg-[#FFFDF4]/95 backdrop-blur">
             <div
-                 class="mx-auto flex h-20 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+                 class="mx-auto flex {{ $siteLogoUrl ? 'h-24' : 'h-20' }} max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
                 <a href="{{ route('home') }}" class="group flex flex-none items-center gap-2.5">
                     @if ($siteLogoUrl)
-                        <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-11 w-auto max-w-[150px] object-contain sm:max-w-[240px]">
+                        <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-20 w-auto max-w-[170px] object-contain sm:max-w-[300px]">
                     @else
                     <span
                           class="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-400 text-amber-950 shadow-soft transition group-hover:scale-105">
@@ -216,7 +216,7 @@
                 <div>
                     <a href="{{ route('home') }}" class="flex items-center gap-2.5">
                         @if ($siteLogoUrl)
-                            <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-11 w-auto max-w-[240px] object-contain">
+                            <img src="{{ $siteLogoUrl }}" alt="Logo Mamikhevanshop" class="h-24 w-auto max-w-[320px] object-contain">
                         @else
                         <span
                               class="grid h-11 w-11 place-items-center rounded-2xl bg-gradient-to-br from-amber-400 to-yellow-400 text-amber-950 shadow-soft">
