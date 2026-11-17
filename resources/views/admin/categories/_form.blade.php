@@ -1,5 +1,27 @@
 @php
     $category = $category ?? null;
+    $selectedIcon = old('icon', $category->icon ?? '');
+    $iconOptions = [
+        '👶' => 'Bayi & newborn',
+        '👧' => 'Anak perempuan',
+        '👦' => 'Anak laki-laki',
+        '👕' => 'Atasan / kaos',
+        '👚' => 'Blus',
+        '👔' => 'Kemeja',
+        '👖' => 'Celana panjang',
+        '🩳' => 'Celana pendek',
+        '👗' => 'Dress / rok',
+        '🧥' => 'Jaket / outer',
+        '🦺' => 'Rompi',
+        '🧸' => 'Setelan anak',
+        '🧦' => 'Kaos kaki',
+        '👟' => 'Sepatu',
+        '🩴' => 'Sandal',
+        '🧢' => 'Topi',
+        '🎒' => 'Tas',
+        '🎀' => 'Aksesori',
+        '🧺' => 'Kategori umum',
+    ];
 @endphp
 
 @if ($errors->any())
@@ -13,7 +35,7 @@
     </div>
 @endif
 
-<div class="grid gap-5 sm:grid-cols-[1fr_140px]">
+<div class="grid gap-5 sm:grid-cols-[1fr_240px]">
     <div>
         <label for="name" class="text-xs font-extrabold uppercase tracking-wider text-stone-500">Nama kategori <span class="text-yellow-700">*</span></label>
         <input id="name" type="text" name="name" value="{{ old('name', $category->name ?? '') }}" required
@@ -23,8 +45,16 @@
 
     <div>
         <label for="icon" class="text-xs font-extrabold uppercase tracking-wider text-stone-500">Ikon</label>
-        <input id="icon" type="text" name="icon" value="{{ old('icon', $category->icon ?? '') }}" placeholder="👕" maxlength="10"
-               class="mt-2 w-full rounded-xl border-stone-200 py-2.5 text-center text-lg focus:border-amber-300 focus:ring-amber-200">
+        <select id="icon" name="icon" class="mt-2 w-full rounded-xl border-stone-200 py-2.5 text-sm focus:border-amber-300 focus:ring-amber-200">
+            <option value="" @selected($selectedIcon === '')>Tanpa ikon (pakai bawaan)</option>
+            @if ($selectedIcon !== '' && ! array_key_exists($selectedIcon, $iconOptions))
+                <option value="{{ $selectedIcon }}" selected>{{ $selectedIcon }} Ikon saat ini</option>
+            @endif
+            @foreach ($iconOptions as $icon => $label)
+                <option value="{{ $icon }}" @selected($selectedIcon === $icon)>{{ $icon }} {{ $label }}</option>
+            @endforeach
+        </select>
+        <p class="mt-1.5 text-[11px] font-semibold text-stone-400">Pilih ikon untuk kategori di toko.</p>
         @error('icon') <p class="mt-1.5 text-xs font-bold text-yellow-700">{{ $message }}</p> @enderror
     </div>
 </div>
