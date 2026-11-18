@@ -42,7 +42,7 @@
                 <label for="name" class="text-xs font-extrabold uppercase tracking-wider text-stone-500">Nama tipe <span class="text-yellow-700">*</span></label>
                 <input id="name" type="text" name="name"
                        value="{{ old('name', $sizeGuide?->name ?? '') }}"
-                       required maxlength="80"
+                       required maxlength="80" autocomplete="off"
                        class="mt-2 w-full rounded-xl border-stone-200 py-2.5 text-sm focus:border-amber-300 focus:ring-amber-200"
                        placeholder="Contoh: Atasan/Kaos">
                 @error('name') <p class="mt-1.5 text-xs font-bold text-yellow-700">{{ $message }}</p> @enderror
@@ -52,8 +52,10 @@
                 <label for="slug" class="text-xs font-extrabold uppercase tracking-wider text-stone-500">Slug <span class="font-semibold text-stone-400">(opsional)</span></label>
                 <input id="slug" type="text" name="slug"
                        value="{{ old('slug', $sizeGuide?->slug ?? '') }}"
+                       maxlength="100" autocomplete="off" spellcheck="false"
                        placeholder="otomatis-dari-nama"
                        class="mt-2 w-full rounded-xl border-stone-200 py-2.5 text-sm focus:border-amber-300 focus:ring-amber-200">
+                <p class="mt-1.5 text-[11px] font-semibold text-stone-400">{{ $sizeGuide ? 'Kosongkan untuk mempertahankan slug saat ini.' : 'Kosongkan untuk membuat slug dari nama tipe.' }} Huruf dan spasi akan dirapikan otomatis.</p>
                 @error('slug') <p class="mt-1.5 text-xs font-bold text-yellow-700">{{ $message }}</p> @enderror
             </div>
 

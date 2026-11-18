@@ -36,7 +36,7 @@ class SizeGuideController extends Controller
 
         $sizeGuide = SizeGuideType::create([
             'name' => $data['name'],
-            'slug' => $request->input('slug'),
+            'slug' => $data['slug'],
             'description' => $data['description'] ?? null,
             'measurement_fields' => $data['measurement_fields'],
         ]);
@@ -67,7 +67,7 @@ class SizeGuideController extends Controller
 
         $sizeGuide->update([
             'name' => $data['name'],
-            'slug' => $request->input('slug') ?: $sizeGuide->slug,
+            'slug' => $data['slug'],
             'description' => $data['description'] ?? null,
             'measurement_fields' => $data['measurement_fields'],
         ]);

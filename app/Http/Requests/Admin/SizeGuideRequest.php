@@ -15,7 +15,7 @@ class SizeGuideRequest extends FormRequest
 
     public function rules(): array
     {
-        $sizeGuide = $this->route('sizeGuide');
+        $sizeGuide = $this->route('size_guide');
         $validFields = array_keys(SizeGuideEntry::MEASUREMENT_LABELS);
 
         return [
@@ -26,7 +26,7 @@ class SizeGuideRequest extends FormRequest
                 Rule::unique('size_guide_types', 'name')->ignore($sizeGuide?->id),
             ],
             'slug' => [
-                'nullable',
+                'required',
                 'string',
                 'max:100',
                 Rule::unique('size_guide_types', 'slug')->ignore($sizeGuide?->id),
@@ -51,10 +51,26 @@ class SizeGuideRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
-        if (filled($this->input('name')) && blank($this->input('slug'))) {
-            $this->merge([
-                'slug' => str($this->input('name'))->slug()->toString(),
-            ]);
+        $name = $this->input('name');
+        $slug = $this->input('slug');
+
+        if (is_string($name)) {
+            $name = trim($name);
         }
+
+        if (is_string($slug)) {
+            $slug = trim($slug);
+
+            if ($slug !== '') {
+                $slug = str($slug)->slug()->toString();
+            }
+        }
+
+        if (blank($slug)) {
+            $sizeGuide = $this->route('size_guide');
+            $slug = $sizeGuide?->slug ?? (is_string($name) ? str($name)->slug()->toString() : null);
+        }
+
+        $this->merge(['name' => $name, 'slug' => $slug]);
     }
 }
