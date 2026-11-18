@@ -8,6 +8,9 @@
 @if ($saleOnly)
     <input type="hidden" name="sale" value="1">
 @endif
+@if ($featuredOnly)
+    <input type="hidden" name="featured" value="1">
+@endif
 
 <div>
     <label for="filter-q" class="text-xs font-extrabold uppercase tracking-wider text-stone-400">Cari produk</label>
@@ -68,6 +71,7 @@
             class="mt-2 w-full rounded-xl border-yellow-200 py-2.5 text-sm focus:border-amber-300 focus:ring-amber-200">
         <option value="latest" @selected($currentSort === 'latest')>Terbaru</option>
         <option value="popular" @selected($currentSort === 'popular')>Paling populer</option>
+        <option value="discount_desc" @selected($currentSort === 'discount_desc')>Potongan harga terbesar</option>
         <option value="price_asc" @selected($currentSort === 'price_asc')>Harga terendah</option>
         <option value="price_desc" @selected($currentSort === 'price_desc')>Harga tertinggi</option>
     </select>

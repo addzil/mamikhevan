@@ -164,7 +164,7 @@
                 <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-amber-400">Harga spesial untuk si kecil</p>
                 <h2 class="mt-2 font-display text-3xl font-extrabold text-stone-900 sm:text-4xl">Produk sale</h2>
             </div>
-            <a href="{{ route('products.index', ['sale' => '1']) }}" class="inline-flex items-center gap-2 text-sm font-extrabold text-amber-600 hover:text-yellow-700">
+            <a href="{{ route('products.index', ['sale' => '1', 'sort' => 'discount_desc']) }}" class="inline-flex items-center gap-2 text-sm font-extrabold text-amber-600 hover:text-yellow-700">
                 Lihat semua
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
             </a>
@@ -187,7 +187,7 @@
                 <p class="text-xs font-extrabold uppercase tracking-[0.2em] text-amber-400">Paling dicari orang tua</p>
                 <h2 class="mt-2 font-display text-3xl font-extrabold text-stone-900 sm:text-4xl">Produk favorit</h2>
             </div>
-            <a href="{{ route('products.index', ['sort' => 'popular']) }}" class="inline-flex items-center gap-2 text-sm font-extrabold text-amber-600 hover:text-yellow-700">
+            <a href="{{ route('products.index', ['featured' => '1', 'sort' => 'popular']) }}" class="inline-flex items-center gap-2 text-sm font-extrabold text-amber-600 hover:text-yellow-700">
                 Lihat semua
                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="2.2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" /></svg>
             </a>

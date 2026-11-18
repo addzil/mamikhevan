@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Order;
 use App\Models\Product;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -17,9 +19,10 @@ class ProductController extends Controller
         $sort = (string) $request->query('sort', 'latest');
         $maxPrice = (int) $request->query('max_price');
         $saleOnly = $request->query('sale') === '1';
+        $featuredOnly = $request->query('featured') === '1';
 
         $gender = in_array($gender, ['uniseks', 'laki-laki', 'perempuan'], true) ? $gender : null;
-        $sort = in_array($sort, ['latest', 'price_asc', 'price_desc', 'popular'], true) ? $sort : 'latest';
+        $sort = in_array($sort, ['latest', 'price_asc', 'price_desc', 'popular', 'discount_desc'], true) ? $sort : 'latest';
 
         $products = Product::query()
             ->active()
@@ -37,10 +40,18 @@ class ProductController extends Controller
             ->when($gender, fn ($query) => $query->where('gender', $gender))
             ->when($maxPrice > 0, fn ($query) => $query->where('price', '<=', $maxPrice))
             ->when($saleOnly, fn ($query) => $query->onSale())
+            ->when($featuredOnly, fn ($query) => $query->featured())
+            ->when($sort === 'popular', fn (Builder $query) => $query->withSum([
+                'orderItems as sold_quantity' => fn (Builder $items): Builder => $items
+                    ->where('is_promo_gift', false)
+                    ->whereHas('order', fn (Builder $orders): Builder => $orders->where('status', '!=', Order::STATUS_CANCELLED)),
+            ], 'quantity'))
             ->when($sort === 'price_asc', fn ($query) => $query->orderBy('price'))
             ->when($sort === 'price_desc', fn ($query) => $query->orderByDesc('price'))
-            ->when($sort === 'popular', fn ($query) => $query->orderByDesc('stock')->orderByDesc('is_featured'))
+            ->when($sort === 'popular', fn ($query) => $query->orderByDesc('sold_quantity'))
+            ->when($sort === 'discount_desc', fn ($query) => $query->orderByRaw('COALESCE(compare_price - price, 0) DESC'))
             ->when($sort === 'latest', fn ($query) => $query->latest())
+            ->orderByDesc('id')
             ->paginate(9)
             ->withQueryString();
 
@@ -62,7 +73,8 @@ class ProductController extends Controller
             'gender',
             'sort',
             'maxPrice',
-            'saleOnly'
+            'saleOnly',
+            'featuredOnly'
         ));
     }
 

@@ -39,7 +39,7 @@ class StorefrontTest extends TestCase
         $this->get(route('home'))
             ->assertOk()
             ->assertSee('Produk sale')
-            ->assertSee(route('products.index', ['sale' => '1']))
+            ->assertSee(route('products.index', ['sale' => '1', 'sort' => 'discount_desc']))
             ->assertViewHas('saleProducts', fn ($products): bool => $products->contains($saleProduct)
                 && ! $products->contains($regularProduct)
                 && ! $products->contains($inactiveSaleProduct));
@@ -78,17 +78,36 @@ class StorefrontTest extends TestCase
             [$largestDiscount->id, $newest->id, $outOfStock->id],
             $response->viewData('saleProducts')->pluck('id')->values()->all()
         );
+
+        $this->assertSame(
+            [$outOfStock->id, $newest->id, $largestDiscount->id, $oldest->id, $olderInStock->id],
+            $this->get(route('products.index', ['sort' => 'latest']))
+                ->assertOk()
+                ->viewData('products')->pluck('id')->all()
+        );
+
+        $this->assertSame(
+            [$outOfStock->id, $largestDiscount->id, $newest->id],
+            $this->get(route('products.index', ['sale' => '1', 'sort' => 'discount_desc']))
+                ->assertOk()
+                ->viewData('products')->pluck('id')->all()
+        );
+
+        $response
+            ->assertSee(route('products.index', ['sort' => 'latest']))
+            ->assertSee(route('products.index', ['sale' => '1', 'sort' => 'discount_desc']));
     }
 
     public function test_favorite_products_sort_by_sold_units_excluding_cancelled_orders_and_gifts(): void
     {
-        [$mostSold, $fewerSold, $outOfStock] = Product::query()->orderBy('id')->take(3)->get()->all();
+        [$mostSold, $fewerSold, $outOfStock, $notFavorite] = Product::query()->orderBy('id')->take(4)->get()->all();
         Product::query()->update(['is_active' => false]);
         Order::query()->delete();
 
         foreach ([$mostSold, $fewerSold, $outOfStock] as $product) {
             $product->refresh()->update(['is_active' => true, 'is_featured' => true, 'sizes' => null, 'size_stocks' => null, 'stock' => $product->is($outOfStock) ? 0 : 5]);
         }
+        $notFavorite->refresh()->update(['is_active' => true, 'is_featured' => false]);
 
         $addOrder = function (Product $product, int $quantity, string $status, int $giftQuantity = 0): void {
             $order = Order::create([
@@ -124,12 +143,23 @@ class StorefrontTest extends TestCase
         $addOrder($fewerSold, 2, Order::STATUS_COMPLETED, 8);
         $addOrder($fewerSold, 10, Order::STATUS_CANCELLED);
         $addOrder($outOfStock, 10, Order::STATUS_COMPLETED);
+        $addOrder($notFavorite, 20, Order::STATUS_COMPLETED);
 
         $response = $this->get(route('home'))->assertOk();
 
         $this->assertSame(
             [$mostSold->id, $fewerSold->id, $outOfStock->id],
             $response->viewData('featuredProducts')->pluck('id')->values()->all()
+        );
+
+        $response->assertSee(route('products.index', ['featured' => '1', 'sort' => 'popular']));
+
+        $this->assertSame(
+            [$outOfStock->id, $mostSold->id, $fewerSold->id],
+            $this->get(route('products.index', ['featured' => '1', 'sort' => 'popular']))
+                ->assertOk()
+                ->assertSee('name="featured" value="1"', false)
+                ->viewData('products')->pluck('id')->all()
         );
     }
 
